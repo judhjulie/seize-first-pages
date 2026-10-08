@@ -1,0 +1,5 @@
+:HC["/",""]
+:HL["/seize-first-pages/_next/static/css/b603e3d2818dbcba.css","style"]
+:HL["/seize-first-pages/_next/static/css/887f8ae969582fcf.css","style"]
+:HL["https://cdn.jsdelivr.net/gh/wanteddev/wanted-sans@v1.0.3/packages/wanted-sans/seize-first-pages/fonts/webfonts/variable/split/WantedSansVariable.min.css","style"]
+0:{"tree":{"name":"","param":null,"prefetchHints":4176,"slots":{"children":{"name":"lang","param":{"type":"d","key":"ja","siblings":["_not-found","_global-error","robots.txt","sitemap.xml"]},"prefetchHints":4144,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":4224,"slots":null}}}}},"staleTime":300,"buildId":"_yHH2QPzpGeT-0cV8Ji9x"}

@@ -1,0 +1,8 @@
+User-Agent: *
+Allow: /
+Disallow: /api/
+Disallow: /ko/admin
+Disallow: /en/admin
+Disallow: /ja/admin
+
+Sitemap: https://judhjulie.github.io/seize-first-pages/sitemap.xml

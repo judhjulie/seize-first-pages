@@ -1,0 +1,21 @@
+1:"$Sreact.fragment"
+2:"$Sreact.suspense"
+3:I[1348,["218","static/chunks/218-2eb84ef122d720de.js","689","static/chunks/689-9891464158192807.js","726","static/chunks/726-07ba7a453000dfba.js","375","static/chunks/375-b80ff976056a2d96.js","917","static/chunks/917-ab39fec49e127e92.js","845","static/chunks/app/%5Blang%5D/story/page-e51c9304b467b4ea.js"],"default"]
+4:I[5350,[],"OutletBoundary"]
+8:I[5350,[],"ViewportBoundary"]
+9:I[5350,[],"MetadataBoundary"]
+a:I[4835,[],"IconMark"]
+c:I[3743,[],""]
+d:I[2883,[],""]
+7:X
+f:X
+f:C
+0:{"buildId":"_yHH2QPzpGeT-0cV8Ji9x","data":[{"rsc":["$","$1","c",{"children":[["$","$2",null,{"fallback":null,"children":["$","$L3",null,{}]}],null,["$","$L4",null,{"children":["$","$2",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":"$@6","staleTime":"$7","varyParams":null},{"rsc":["$","$1","h",{"children":[null,["$","$L8",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1, viewport-fit=cover"}],["$","meta","2",{"name":"theme-color","content":"#0A1B3D"}]]}],["$","div",null,{"hidden":true,"children":["$","$L9",null,{"children":["$","$2",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"STORY · SEIZE 〈FIRST¿〉"}],["$","meta","1",{"name":"description","content":"同じ夢を見た五人の少年。島の家に残る痕跡をたどり、初めての出会いの記憶を探してください。"}],["$","link","2",{"rel":"canonical","href":"https://judhjulie.github.io/seize-first-pages/seize-first-pages/ja/"}],["$","link","3",{"rel":"alternate","hrefLang":"ko","href":"https://judhjulie.github.io/seize-first-pages/seize-first-pages/ko/"}],["$","link","4",{"rel":"alternate","hrefLang":"en","href":"https://judhjulie.github.io/seize-first-pages/seize-first-pages/en/"}],["$","link","5",{"rel":"alternate","hrefLang":"ja","href":"https://judhjulie.github.io/seize-first-pages/seize-first-pages/ja/"}],["$","meta","6",{"property":"og:title","content":"SEIZE 〈FIRST¿〉 — The Story After"}],["$","meta","7",{"property":"og:description","content":"同じ夢を見た五人の少年。島の家に残る痕跡をたどり、初めての出会いの記憶を探してください。"}],["$","meta","8",{"property":"og:site_name","content":"SEIZE 〈FIRST¿〉"}],["$","meta","9",{"property":"og:locale","content":"ja"}],["$","meta","10",{"property":"og:image","content":"https://judhjulie.github.io/seize-first-pages/seize-first-pages/ja/opengraph-image?a86d5e8ccc9fa64c"}],["$","meta","11",{"property":"og:image:type","content":"image/png"}],["$","meta","12",{"property":"og:image:width","content":"1200"}],["$","meta","13",{"property":"og:image:height","content":"630"}],["$","meta","14",{"property":"og:image:alt","content":"SEIZE 〈FIRST¿〉 — Is this really the first time?"}],["$","meta","15",{"property":"og:type","content":"website"}],["$","meta","16",{"name":"twitter:card","content":"summary_large_image"}],["$","meta","17",{"name":"twitter:title","content":"SEIZE 〈FIRST¿〉 — The Story After"}],["$","meta","18",{"name":"twitter:description","content":"同じ夢を見た五人の少年。島の家に残る痕跡をたどり、初めての出会いの記憶を探してください。"}],["$","meta","19",{"name":"twitter:image","content":"https://judhjulie.github.io/seize-first-pages/seize-first-pages/ja/twitter-image?a86d5e8ccc9fa64c"}],["$","meta","20",{"name":"twitter:image:alt","content":"SEIZE 〈FIRST¿〉 — Is this really the first time?"}],["$","meta","21",{"name":"twitter:image:type","content":"image/png"}],["$","meta","22",{"name":"twitter:image:width","content":"1200"}],["$","meta","23",{"name":"twitter:image:height","content":"630"}],["$","link","24",{"rel":"icon","href":"/seize-first-pages/icon.png"}],["$","link","25",{"rel":"apple-touch-icon","href":"/seize-first-pages/icon.png"}],["$","$La","26",{}]]}]}]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"isPartial":"$@b","staleTime":"$7","varyParams":null},{"rsc":["$","$1","c",{"children":[null,["$","$Lc",null,{"parallelRouterKey":"children","template":["$","$Ld",null,{}]}]]}],"isPartial":"$@e","staleTime":"$7","varyParams":"$f"}],"isUpgradeableISRFallback":false,"a":"$@10","rootVaryParams":null,"needsRuntimeRequest":"$@11"}
+5:null
+11:true
+7:300
+7:C
+10:0
+b:"$undefined"
+e:"$undefined"
+6:"$undefined"

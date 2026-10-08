@@ -1,0 +1,62 @@
+{
+  "radix": {
+    "repo": "radix-ui/themes",
+    "commit": "1faff10ac26ae17f09944d418c6949b93fc6b566",
+    "files": [
+      {
+        "source": "https://raw.githubusercontent.com/radix-ui/themes/1faff10ac26ae17f09944d418c6949b93fc6b566/LICENSE",
+        "local": "seize-first/hierarchy-source/radix/LICENSE.txt"
+      },
+      {
+        "source": "https://raw.githubusercontent.com/radix-ui/themes/1faff10ac26ae17f09944d418c6949b93fc6b566/packages/radix-ui-themes/src/styles/tokens/typography.css",
+        "local": "seize-first/hierarchy-source/radix/typography.css"
+      },
+      {
+        "source": "https://raw.githubusercontent.com/radix-ui/themes/1faff10ac26ae17f09944d418c6949b93fc6b566/packages/radix-ui-themes/src/styles/tokens/space.css",
+        "local": "seize-first/hierarchy-source/radix/space.css"
+      }
+    ]
+  },
+  "lucide": {
+    "repo": "lucide-icons/lucide",
+    "commit": "1fae58d0a9c661a338036838caf3399b5507bab6",
+    "files": [
+      {
+        "source": "https://raw.githubusercontent.com/lucide-icons/lucide/1fae58d0a9c661a338036838caf3399b5507bab6/LICENSE",
+        "local": "seize-first/hierarchy-source/lucide/LICENSE.txt"
+      },
+      {
+        "source": "https://raw.githubusercontent.com/lucide-icons/lucide/1fae58d0a9c661a338036838caf3399b5507bab6/icons/archive.svg",
+        "local": "seize-first/hierarchy-source/lucide/archive.svg"
+      },
+      {
+        "source": "https://raw.githubusercontent.com/lucide-icons/lucide/1fae58d0a9c661a338036838caf3399b5507bab6/icons/book-open.svg",
+        "local": "seize-first/hierarchy-source/lucide/book-open.svg"
+      },
+      {
+        "source": "https://raw.githubusercontent.com/lucide-icons/lucide/1fae58d0a9c661a338036838caf3399b5507bab6/icons/lightbulb.svg",
+        "local": "seize-first/hierarchy-source/lucide/lightbulb.svg"
+      },
+      {
+        "source": "https://raw.githubusercontent.com/lucide-icons/lucide/1fae58d0a9c661a338036838caf3399b5507bab6/icons/arrow-right.svg",
+        "local": "seize-first/hierarchy-source/lucide/arrow-right.svg"
+      },
+      {
+        "source": "https://raw.githubusercontent.com/lucide-icons/lucide/1fae58d0a9c661a338036838caf3399b5507bab6/icons/check.svg",
+        "local": "seize-first/hierarchy-source/lucide/check.svg"
+      },
+      {
+        "source": "https://raw.githubusercontent.com/lucide-icons/lucide/1fae58d0a9c661a338036838caf3399b5507bab6/icons/x.svg",
+        "local": "seize-first/hierarchy-source/lucide/x.svg"
+      },
+      {
+        "source": "https://raw.githubusercontent.com/lucide-icons/lucide/1fae58d0a9c661a338036838caf3399b5507bab6/icons/chevron-down.svg",
+        "local": "seize-first/hierarchy-source/lucide/chevron-down.svg"
+      },
+      {
+        "source": "https://raw.githubusercontent.com/lucide-icons/lucide/1fae58d0a9c661a338036838caf3399b5507bab6/icons/compass.svg",
+        "local": "seize-first/hierarchy-source/lucide/compass.svg"
+      }
+    ]
+  }
+}

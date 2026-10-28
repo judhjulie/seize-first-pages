@@ -1,0 +1,37 @@
+@font-face{font-family:Galmuri;src:url('Galmuri11-Bold.woff2') format('woff2');font-display:swap}
+:root{color-scheme:dark;font-family:Galmuri,system-ui,sans-serif;background:#06090e;color:#eee9dc}
+*{box-sizing:border-box}
+html,body{width:100%;height:100%;margin:0;overflow:hidden}
+body{background:#06090e}
+a{color:inherit;text-decoration:none}
+button,a{-webkit-tap-highlight-color:transparent}
+.experience{position:relative;width:100%;height:100%;min-height:500px;isolation:isolate;overflow:hidden;background:#06090e}
+.scene-stage{position:absolute;inset:0;overflow:hidden;touch-action:pan-y}
+.render-layer{position:absolute;inset:0;overflow:hidden}
+.render-layer canvas{display:block}
+.css-layer{pointer-events:none;z-index:2}
+.crt-screen{position:relative;width:1000px;height:740px;overflow:hidden;border-radius:48px / 38px;background:#061c30;pointer-events:auto;box-shadow:0 0 32px rgba(67,145,174,.25),inset 0 0 42px #000}
+.crt-enter{position:absolute;z-index:8;inset:0;display:block;padding:0;border:0;border-radius:inherit;background:transparent;cursor:zoom-in}
+.crt-enter:focus-visible{outline:4px solid #d7f1f5;outline-offset:-8px}
+.crt-enter[hidden]{display:none}
+.crt-screen iframe{display:block;width:100%;height:100%;border:0;border-radius:inherit;background:#071d30;filter:saturate(.76) contrast(.95) brightness(.92) blur(.35px);transform:scale(1.012,1.018);transform-origin:center center}
+.crt-screen:after{content:"";position:absolute;z-index:2;inset:0;pointer-events:none;border-radius:inherit;background:repeating-linear-gradient(0deg,rgba(2,8,16,.19) 0,rgba(2,8,16,.19) 1px,rgba(219,242,243,.035) 2px,transparent 4px),radial-gradient(ellipse at center,transparent 46%,rgba(0,11,23,.43));mix-blend-mode:multiply;opacity:.82}
+.crt-screen:before{content:"";position:absolute;z-index:5;inset:0;pointer-events:none;border-radius:inherit;box-shadow:inset 0 0 27px 7px rgba(0,1,4,.8),inset 0 0 88px 32px rgba(0,7,15,.2),0 0 0 2px rgba(76,119,126,.24)}
+.crt-noise,.crt-sweep,.crt-glass,.crt-cursor{position:absolute;pointer-events:none}
+.crt-noise{z-index:3;inset:-80px;opacity:.105;mix-blend-mode:screen;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.9'/%3E%3C/svg%3E");background-size:230px 230px;animation:crt-static .27s steps(3,end) infinite}
+.crt-sweep{z-index:4;left:0;right:0;top:-20%;height:19%;opacity:.22;background:linear-gradient(180deg,transparent,rgba(210,237,240,.26) 58%,rgba(5,21,34,.3) 80%,transparent);filter:blur(9px);animation:crt-sweep 8.5s linear infinite}
+.crt-glass{z-index:5;inset:0;border-radius:inherit;background:radial-gradient(ellipse 90% 116% at 49% 45%,rgba(233,249,255,.055),transparent 54%,rgba(4,24,37,.14) 83%,rgba(0,2,8,.32) 100%),linear-gradient(122deg,rgba(233,248,249,.1),transparent 23%,transparent 75%,rgba(130,190,205,.06));box-shadow:inset 0 0 15px 2px rgba(175,229,233,.08);mix-blend-mode:screen}
+.crt-cursor{z-index:7;width:34px;height:38px;left:50%;top:50%;background:url('retro-icons/cursor.svg') left top / contain no-repeat;opacity:0;filter:drop-shadow(2px 2px 1px #001019);transform:translate(-2px,-2px);transition:opacity .12s,transform .08s}
+.crt-cursor.is-visible{opacity:1}
+.crt-cursor.is-clicking{transform:translate(0,0) scale(.82)}
+@keyframes crt-static{0%{transform:translate(0,0)}25%{transform:translate(12px,-8px)}50%{transform:translate(-9px,5px)}75%{transform:translate(7px,13px)}100%{transform:translate(-11px,-6px)}}
+@keyframes crt-sweep{0%,13%{transform:translateY(0);opacity:0}16%{opacity:.27}27%{transform:translateY(1010px);opacity:.1}28%,100%{transform:translateY(1010px);opacity:0}}
+.loading-state{position:absolute;z-index:5;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;align-items:center;gap:10px;padding:11px 14px;border:1px solid #63747c;background:#17212a;color:#d4e3e8;font-size:12px;white-space:nowrap;box-shadow:0 10px 30px #0008;transition:opacity .4s}
+.loading-state[hidden]{display:none}
+.loading-light{width:6px;height:6px;display:inline-block;border-radius:50%;background:#97dfc1;box-shadow:0 0 10px #97dfc1}
+.loading-light{animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{opacity:.25}}
+@media(max-width:740px){
+ .experience{min-height:420px}
+}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}

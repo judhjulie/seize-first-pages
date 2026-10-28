@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#06090e">
+  <meta name="description" content="오래된 컴퓨터 화면 속 SEIZE의 기록을 탐색하세요.">
+  <title>SEIZE / 오래된 컴퓨터</title>
+  <link rel="icon" href="assets/seize-logo.png">
+  <link rel="stylesheet" href="assets/retro-computer.css?v=7">
+  <script type="importmap">
+  {"imports":{"three":"./assets/vendor/three/three.module.js","three/addons/renderers/CSS3DRenderer.js":"./assets/vendor/three/CSS3DRenderer.js"}}
+  </script>
+</head>
+<body>
+  <main class="experience" id="experience">
+    <div class="scene-stage" id="sceneStage" aria-label="Three.js로 만든 레트로 컴퓨터. 모니터 안의 사이트를 직접 탐색할 수 있습니다.">
+      <div id="webglLayer" class="render-layer" aria-hidden="true"></div>
+      <div id="cssLayer" class="render-layer css-layer"></div>
+      <div class="loading-state" id="loadingState" role="status"><span class="loading-light"></span> 오래된 컴퓨터를 켜는 중…</div>
+    </div>
+  </main>
+  <script type="module" src="assets/retro-computer.js?v=7"></script>
+</body>
+</html>

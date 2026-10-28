@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" role="img" aria-label="물에 젖은 SEIZE 악보 원본">
+ <defs>
+  <linearGradient id="paper" x2="1" y2="1"><stop stop-color="#f8f5e9"/><stop offset=".58" stop-color="#e7e7dc"/><stop offset="1" stop-color="#cbd9d5"/></linearGradient>
+  <radialGradient id="stain"><stop stop-color="#5f9eaa" stop-opacity=".2"/><stop offset="1" stop-color="#5f9eaa" stop-opacity="0"/></radialGradient>
+ </defs>
+ <rect width="600" height="600" fill="url(#paper)"/>
+ <path d="M0 0h600v600H0z" fill="none" stroke="#9aa99f" stroke-width="12"/>
+ <circle cx="525" cy="505" r="192" fill="url(#stain)"/><circle cx="82" cy="105" r="118" fill="url(#stain)"/>
+ <path d="M30 26h540M30 575h540" stroke="#aebfb8" stroke-width="3"/>
+ <text x="43" y="77" font-family="monospace" font-size="21" font-weight="bold" fill="#315675" letter-spacing="3">SEIZE / FIRST¿</text>
+ <text x="545" y="79" text-anchor="end" font-family="monospace" font-size="16" fill="#5d8290">TAKE 00:00</text>
+ <text x="43" y="120" font-family="serif" font-size="30" font-style="italic" fill="#374d58">The last voice</text>
+ <path d="M38 143h524" stroke="#a5b6ae" stroke-width="2"/>
+ <g stroke="#54717a" stroke-width="2" opacity=".83">
+  <path d="M36 177h528M36 194h528M36 211h528M36 228h528M36 245h528"/>
+  <path d="M36 334h528M36 351h528M36 368h528M36 385h528M36 402h528"/>
+ </g>
+ <g stroke="#6a8b93" stroke-width="2" opacity=".75"><path d="M160 170v82M302 170v82M447 170v82M160 327v82M302 327v82M447 327v82"/></g>
+ <g fill="#253c4f" stroke="#253c4f" stroke-width="5" stroke-linecap="round">
+  <ellipse cx="95" cy="227" rx="12" ry="8" transform="rotate(-22 95 227)"/><path d="M106 224v-58"/>
+  <ellipse cx="197" cy="212" rx="12" ry="8" transform="rotate(-22 197 212)"/><path d="M208 209v-54h67v44" fill="none" stroke-width="9"/>
+  <ellipse cx="263" cy="201" rx="12" ry="8" transform="rotate(-22 263 201)"/>
+  <ellipse cx="346" cy="229" rx="12" ry="8" transform="rotate(-22 346 229)"/><path d="M357 226v-60"/>
+  <ellipse cx="491" cy="196" rx="12" ry="8" transform="rotate(-22 491 196)"/><path d="M502 193v-57"/>
+  <ellipse cx="117" cy="393" rx="12" ry="8" transform="rotate(-22 117 393)"/><path d="M128 390v-60"/>
+  <ellipse cx="230" cy="367" rx="12" ry="8" transform="rotate(-22 230 367)"/><path d="M241 364v-55h65v44" fill="none" stroke-width="9"/>
+  <ellipse cx="295" cy="355" rx="12" ry="8" transform="rotate(-22 295 355)"/>
+  <ellipse cx="378" cy="387" rx="12" ry="8" transform="rotate(-22 378 387)"/><path d="M389 384v-58"/>
+  <ellipse cx="510" cy="349" rx="12" ry="8" transform="rotate(-22 510 349)"/><path d="M521 346v-54"/>
+ </g>
+ <path d="M46 285c57-18 90-17 139 5s102 19 148-6 91-27 124-4 60 31 100 12" fill="none" stroke="#91b4b7" stroke-width="8" opacity=".57"/>
+ <path d="M47 463c61-19 88-19 143 6s102 22 147-5 87-31 125-5 64 34 96 10" fill="none" stroke="#7da6ae" stroke-width="10" opacity=".6"/>
+ <path d="M74 500c75 26 172 18 234 3" fill="none" stroke="#4e6571" stroke-width="3" opacity=".5"/>
+ <text x="42" y="551" font-family="monospace" font-size="15" fill="#526f77" letter-spacing="2">UNLISTED / LAST RECORD</text>
+ <g transform="rotate(-14 450 510)" opacity=".62"><rect x="376" y="479" width="160" height="51" rx="2" fill="none" stroke="#8a5a5b" stroke-width="4"/><text x="456" y="511" text-anchor="middle" font-family="monospace" font-size="19" font-weight="bold" fill="#8a5a5b">MISSING</text></g>
+</svg>

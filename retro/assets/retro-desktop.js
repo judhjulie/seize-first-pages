@@ -47,7 +47,7 @@ let z=10,focused=null,currentTrack=2,memberIndex=0,conceptIndex=0,discInserted=f
 const stormTimers=[];
 // Versioned progress prevents the earlier three-window shortcut from unlocking the final file.
 let conceptUnlocked=localStorage.getItem('seize-concept-memory-v1')==='1';
-let secretUnlocked=conceptUnlocked&&localStorage.getItem('seize-secret-score-v1')==='1';
+let secretUnlocked=conceptUnlocked&&localStorage.getItem('seize-secret-tiles-v2')==='1';
 if(secretUnlocked)desktop.querySelector('.secret-icon').hidden=false;
 
 function sound(kind='click'){
@@ -113,7 +113,7 @@ Object.entries(windows).forEach(([id,el])=>{
  },true);
  el.addEventListener('pointerup',()=>resizing=null);el.addEventListener('pointercancel',()=>resizing=null);el.addEventListener('pointerleave',()=>{if(!resizing)el.style.cursor=''})
 });
-function unlockSecret(){if(!conceptUnlocked||secretUnlocked)return;secretUnlocked=true;localStorage.setItem('seize-secret-score-v1','1');const icon=desktop.querySelector('.secret-icon');icon.hidden=false;icon.style.zIndex='3';$('conceptQuizBadge').textContent='완료';$('conceptStatus').textContent='15×15 score recovered · Secret folder unlocked';renderExplore();sound('error')}
+function unlockSecret(){if(!conceptUnlocked||secretUnlocked)return;secretUnlocked=true;localStorage.setItem('seize-secret-tiles-v2','1');const icon=desktop.querySelector('.secret-icon');icon.hidden=false;icon.style.zIndex='3';$('conceptQuizBadge').textContent='완료';$('conceptStatus').textContent='5×5 score assembled · Secret folder unlocked';renderExplore();sound('error')}
 function enterSecret(){
  clearErrorStorm();
  clearTimeout(secretTimer);clearTimeout(floodTimer);clearTimeout(loadingTimer);
@@ -382,7 +382,7 @@ function showConceptTab(tab){
  if(!conceptUnlocked)return;const quizVisible=tab==='quiz';
  $('conceptGallery').hidden=quizVisible;$('conceptQuiz').hidden=!quizVisible;
  $('conceptPhotosTab').setAttribute('aria-pressed',String(!quizVisible));$('conceptQuizTab').setAttribute('aria-pressed',String(quizVisible));
- $('conceptStatus').textContent=secretUnlocked?'15×15 score recovered · Secret folder unlocked':quizVisible?'15×15 score puzzle · In progress':conceptPhotos.length+' photos · Score puzzle pending';
+ $('conceptStatus').textContent=secretUnlocked?'5×5 score assembled · Secret folder unlocked':quizVisible?'5×5 score puzzle · In progress':conceptPhotos.length+' photos · Score puzzle pending';
 }
 $('conceptPhotosTab').addEventListener('click',()=>showConceptTab('photos'));
 $('conceptQuizTab').addEventListener('click',()=>showConceptTab('quiz'));
@@ -413,42 +413,58 @@ function unlockConcept(){
  $('gameComplete').hidden=false;$('memberStatus').textContent='Memory complete · Photos unlocked';syncConceptLock();sound('open');
  setTimeout(()=>{openWindow('concept');showConceptTab('photos')},600);
 }
-const scoreStorageKey='seize-score-grid-v1',scoreHintsKey='seize-score-hints-v1';
-let scoreState=Array(SeizeScorePuzzle.size**2).fill(0),scoreHints=0,scoreMode='fill',scoreActiveIndex=0,scoreDrawing=null,scoreTouch=null;
-try{const saved=JSON.parse(sessionStorage.getItem(scoreStorageKey)||'null');if(Array.isArray(saved)&&saved.length===scoreState.length&&saved.every(value=>[0,1,2].includes(value)))scoreState=saved;scoreHints=Number(sessionStorage.getItem(scoreHintsKey))||0}catch{}
-if(secretUnlocked)scoreState=SeizeScorePuzzle.solution.map(value=>value?1:2);
+const scoreStorageKey='seize-score-tiles-v2',scoreHintsKey='seize-score-tile-hints-v2';
+let scoreState=SeizeScorePuzzle.shuffle(),scoreHints=0,scoreSelected=-1,scoreActiveIndex=0,scoreDragFrom=-1;
+try{const saved=JSON.parse(sessionStorage.getItem(scoreStorageKey)||'null');if(SeizeScorePuzzle.isValid(saved))scoreState=saved;scoreHints=Number(sessionStorage.getItem(scoreHintsKey))||0}catch{}
+if(secretUnlocked)scoreState=SeizeScorePuzzle.solved.slice();
 function saveScore(){try{sessionStorage.setItem(scoreStorageKey,JSON.stringify(scoreState));sessionStorage.setItem(scoreHintsKey,String(scoreHints))}catch{}}
-function setScoreMode(mode){scoreMode=mode;for(const [id,value] of [['scoreFill','fill'],['scoreCross','cross'],['scoreErase','erase']])$(id).setAttribute('aria-pressed',String(mode===value))}
-for(const [id,mode] of [['scoreFill','fill'],['scoreCross','cross'],['scoreErase','erase']])$(id).addEventListener('click',()=>setScoreMode(mode));
 function refreshScore(){
- [...$('scoreGrid').children].forEach((button,index)=>{const row=Math.floor(index/15),column=index%15;button.dataset.state=scoreState[index]===1?'filled':scoreState[index]===2?'crossed':'blank';button.setAttribute('aria-pressed',String(scoreState[index]===1));button.setAttribute('aria-label',`${row+1}행 ${column+1}열, ${scoreState[index]===1?'채운 칸':scoreState[index]===2?'X 표시':'빈칸'}`)});
- [...$('scoreRowClues').children].forEach((clue,index)=>clue.classList.toggle('is-complete',SeizeScorePuzzle.lineCorrect(scoreState,index,'row')));
- [...$('scoreColumnClues').children].forEach((clue,index)=>clue.classList.toggle('is-complete',SeizeScorePuzzle.lineCorrect(scoreState,index,'column')));
- $('scoreProgress').textContent=`채운 칸 ${scoreState.filter(value=>value===1).length} / ${SeizeScorePuzzle.filledCount}`;
+ [...$('scoreGrid').children].forEach((button,index)=>{
+  const tile=scoreState[index];button.style.backgroundPosition=`${tile%5*25}% ${Math.floor(tile/5)*25}%`;
+  button.dataset.correct=String(tile===index);button.dataset.selected=String(index===scoreSelected);
+  button.setAttribute('aria-pressed',String(index===scoreSelected));
+  button.setAttribute('aria-label',`${Math.floor(index/5)+1}행 ${index%5+1}열, 악보 조각 ${tile+1}${tile===index?', 제자리':''}${index===scoreSelected?', 선택됨':''}`);
+ });
+ $('scoreProgress').textContent=`제자리 ${scoreState.filter((tile,index)=>tile===index).length} / 25`;
  $('scoreHints').textContent=`힌트 ${scoreHints}회`;
  saveScore();
- if(!secretUnlocked&&conceptUnlocked&&SeizeScorePuzzle.isSolved(scoreState)){unlockSecret();$('scorePlay').hidden=true;$('quizComplete').hidden=false;$('openSecretFile').focus();sound('open')}
+ if(!secretUnlocked&&conceptUnlocked&&SeizeScorePuzzle.isSolved(scoreState)){
+  unlockSecret();$('scorePlay').hidden=true;$('quizComplete').hidden=false;$('openSecretFile').focus();sound('open');
+ }
 }
-function updateScoreCell(index,value){if(secretUnlocked||scoreState[index]===value)return;scoreState[index]=value;sound();refreshScore();const row=Math.floor(index/15);if(!secretUnlocked){const overfilled=scoreState.slice(row*15,row*15+15).filter(cell=>cell===1).length>SeizeScorePuzzle.rowClues[row].reduce((sum,n)=>sum+n,0);$('scoreFeedback').textContent=SeizeScorePuzzle.lineCorrect(scoreState,row,'row')?`${row+1}행의 악보가 맞았습니다.`:overfilled?`${row+1}행에 채운 칸이 너무 많습니다.`:'숫자 사이에는 빈칸을 하나 이상 남겨 주세요.'}}
 function focusScoreCell(index){const buttons=$('scoreGrid').children;buttons[scoreActiveIndex].tabIndex=-1;scoreActiveIndex=index;buttons[index].tabIndex=0;buttons[index].focus({preventScroll:true})}
-for(let row=0;row<15;row++){
- const rowClue=document.createElement('div');rowClue.className='score-row-clue';rowClue.textContent=SeizeScorePuzzle.rowClues[row].join(' ');rowClue.setAttribute('aria-label',`${row+1}행: ${SeizeScorePuzzle.rowClues[row].join(', ')}`);$('scoreRowClues').append(rowClue)
+function swapScoreTiles(first,second){
+ if(secretUnlocked||first===second)return;
+ scoreState=SeizeScorePuzzle.swap(scoreState,first,second);scoreSelected=-1;
+ $('scoreFeedback').textContent=`${Math.floor(first/5)+1}행 ${first%5+1}열과 ${Math.floor(second/5)+1}행 ${second%5+1}열의 조각을 바꿨습니다.`;
+ refreshScore();
 }
-for(let column=0;column<15;column++){
- const clue=document.createElement('div');clue.className='score-column-clue';clue.setAttribute('aria-label',`${column+1}열: ${SeizeScorePuzzle.columnClues[column].join(', ')}`);SeizeScorePuzzle.columnClues[column].forEach(number=>{const digit=document.createElement('span');digit.textContent=number;clue.append(digit)});$('scoreColumnClues').append(clue)
+function chooseScoreTile(index){
+ if(secretUnlocked)return;
+ focusScoreCell(index);
+ if(scoreSelected<0){scoreSelected=index;$('scoreFeedback').textContent='바꿀 조각을 하나 더 선택하세요.';refreshScore();return}
+ if(scoreSelected===index){scoreSelected=-1;$('scoreFeedback').textContent='선택을 취소했습니다.';refreshScore();return}
+ swapScoreTiles(scoreSelected,index);
 }
-for(let index=0;index<225;index++){
- const row=Math.floor(index/15),column=index%15,button=document.createElement('button');button.type='button';button.className='score-cell';button.tabIndex=index===0?0:-1;button.classList.toggle('on-staff',[3,5,7,9,11].includes(row));button.classList.toggle('bar-right',column===4||column===9);button.classList.toggle('bar-bottom',row===4||row===9);button.dataset.index=String(index);
- button.addEventListener('pointerdown',event=>{if(event.button!==0&&event.button!==2)return;if(event.pointerType==='touch'){scoreTouch={pointerId:event.pointerId,index,x:event.clientX,y:event.clientY};return}event.preventDefault();focusScoreCell(index);const intended=event.button===2?2:scoreMode==='fill'?1:scoreMode==='cross'?2:0;scoreDrawing={pointerId:event.pointerId,value:intended&&scoreState[index]===intended?0:intended};updateScoreCell(index,scoreDrawing.value)});
- button.addEventListener('pointerup',event=>{if(event.pointerType!=='touch'||!scoreTouch||scoreTouch.pointerId!==event.pointerId)return;const tap=Math.hypot(event.clientX-scoreTouch.x,event.clientY-scoreTouch.y)<10;if(tap){focusScoreCell(index);const intended=scoreMode==='fill'?1:scoreMode==='cross'?2:0;updateScoreCell(index,intended&&scoreState[index]===intended?0:intended)}scoreTouch=null});
- button.addEventListener('pointerenter',event=>{if(scoreDrawing&&scoreDrawing.pointerId===event.pointerId)updateScoreCell(index,scoreDrawing.value)});
- button.addEventListener('keydown',event=>{const next=event.key==='ArrowRight'?Math.min(224,index+1):event.key==='ArrowLeft'?Math.max(0,index-1):event.key==='ArrowDown'?Math.min(224,index+15):event.key==='ArrowUp'?Math.max(0,index-15):null;if(next!==null){event.preventDefault();focusScoreCell(next)}else if(event.key===' '||event.key==='Enter'||event.key==='x'||event.key==='X'||event.key==='Backspace'||event.key==='Delete'){event.preventDefault();const value=event.key==='x'||event.key==='X'?2:event.key==='Backspace'||event.key==='Delete'?0:scoreMode==='fill'?1:scoreMode==='cross'?2:0;updateScoreCell(index,value&&scoreState[index]===value?0:value)}});
- $('scoreGrid').append(button)
+for(let index=0;index<SeizeScorePuzzle.count;index++){
+ const button=document.createElement('button');button.type='button';button.className='score-cell';button.tabIndex=index===0?0:-1;button.draggable=true;
+ button.addEventListener('click',()=>chooseScoreTile(index));
+ button.addEventListener('dragstart',event=>{scoreDragFrom=index;event.dataTransfer.effectAllowed='move';event.dataTransfer.setData('text/plain',String(index));button.classList.add('dragging')});
+ button.addEventListener('dragend',()=>{scoreDragFrom=-1;button.classList.remove('dragging')});
+ button.addEventListener('dragover',event=>{event.preventDefault();event.dataTransfer.dropEffect='move'});
+ button.addEventListener('drop',event=>{event.preventDefault();const from=scoreDragFrom>=0?scoreDragFrom:Number(event.dataTransfer.getData('text/plain'));if(Number.isInteger(from)&&from>=0&&from<25){focusScoreCell(index);swapScoreTiles(from,index)}scoreDragFrom=-1});
+ button.addEventListener('keydown',event=>{
+  const row=Math.floor(index/5),column=index%5;
+  const next=event.key==='ArrowRight'?index+(column<4?1:0):event.key==='ArrowLeft'?index-(column>0?1:0):event.key==='ArrowDown'?index+(row<4?5:0):event.key==='ArrowUp'?index-(row>0?5:0):null;
+  if(next!==null){event.preventDefault();focusScoreCell(next)}
+  else if(event.key===' '||event.key==='Enter'){event.preventDefault();chooseScoreTile(index)}
+  else if(event.key==='Escape'&&scoreSelected>=0){event.preventDefault();scoreSelected=-1;refreshScore()}
+ });
+ $('scoreGrid').append(button);
 }
-$('scoreGrid').addEventListener('contextmenu',event=>event.preventDefault());
-document.addEventListener('pointerup',()=>scoreDrawing=null);document.addEventListener('pointercancel',()=>{scoreDrawing=null;scoreTouch=null});
-$('scoreHint').addEventListener('click',()=>{const hint=SeizeScorePuzzle.hintRow(scoreState);if(!hint)return;scoreState=hint.state;scoreHints++;$('scoreFeedback').textContent=`${hint.row+1}행의 악보를 복구했습니다.`;refreshScore()});
-$('scoreReset').addEventListener('click',()=>{scoreState=Array(225).fill(0);scoreHints=0;$('scoreFeedback').textContent='악보를 다시 맞춰 보세요.';refreshScore()});
+$('scoreHint').addEventListener('click',()=>{const hint=SeizeScorePuzzle.hint(scoreState);if(!hint)return;scoreState=hint.state;scoreSelected=-1;scoreHints++;$('scoreFeedback').textContent=`${Math.floor(hint.target/5)+1}행 ${hint.target%5+1}열의 조각을 제자리로 돌렸습니다.`;refreshScore()});
+$('scoreReset').addEventListener('click',()=>{scoreState=SeizeScorePuzzle.shuffle();scoreHints=0;scoreSelected=-1;$('scoreFeedback').textContent='악보 조각을 다시 섞었습니다.';refreshScore()});
+$('scorePreview').addEventListener('click',()=>{const visible=$('scoreReference').hidden;$('scoreReference').hidden=!visible;$('scorePreview').setAttribute('aria-pressed',String(visible));$('scorePreview').textContent=visible?'원본 닫기':'원본 보기'});
 function renderScorePuzzle(){$('scorePlay').hidden=secretUnlocked;$('quizComplete').hidden=!secretUnlocked;refreshScore()}
 renderScorePuzzle();
 $('gameOpenPhotos').addEventListener('click',()=>openWindow('concept'));
@@ -457,12 +473,12 @@ const menuActions={
  disc:()=>setLid(!lidOpen),'music-view':()=>maximize('music'),'music-options':()=>$('soundToggle').click(),'music-help':()=>{$('musicStatus').textContent='CD를 열고 디스크를 넣으세요.'},
  'member-file':()=>{showMemberTab('profile');showMember(0)},'member-next':()=>{showMemberTab('profile');showMember(memberIndex+1)},'member-game':()=>showMemberTab('game'),'member-view':()=>maximize('photos'),'member-help':()=>{$('memberStatus').textContent='기억 카드를 모두 맞추면 컨셉 포토가 열립니다.'},
  'album-top':()=>windows.album.querySelector('.window-body').scrollTo({top:0,behavior:'smooth'}),'album-tracks':()=>windows.album.querySelector('#albumTracks').scrollIntoView({block:'start',behavior:'smooth'}),'album-credits':()=>{$('albumTracks').nextElementSibling.textContent='SEIZE · FIRST¿ / 1st Mini Album'},'album-help':()=>{$('albumTracks').nextElementSibling.textContent='곡을 선택하면 CD Player에서 곡 정보를 볼 수 있어요.'},
- 'concept-first':()=>{if(conceptUnlocked){showConceptTab('photos');showConcept(0)}else{openWindow('photos');showMemberTab('game')}},'concept-next':()=>{if(conceptUnlocked){showConceptTab('photos');showConcept(conceptIndex+1)}else{openWindow('photos');showMemberTab('game')}},'concept-view':()=>maximize('concept'),'concept-help':()=>{$('conceptStatus').textContent=conceptUnlocked?'15×15 악보를 맞추면 비밀 폴더가 나타납니다.':'멤버 소개의 기억 카드를 맞추면 열립니다.'},
+ 'concept-first':()=>{if(conceptUnlocked){showConceptTab('photos');showConcept(0)}else{openWindow('photos');showMemberTab('game')}},'concept-next':()=>{if(conceptUnlocked){showConceptTab('photos');showConcept(conceptIndex+1)}else{openWindow('photos');showMemberTab('game')}},'concept-view':()=>maximize('concept'),'concept-help':()=>{$('conceptStatus').textContent=conceptUnlocked?'5×5 악보 조각을 맞추면 비밀 폴더가 나타납니다.':'멤버 소개의 기억 카드를 맞추면 열립니다.'},
  'secret-file':()=>closeWindow('secret'),'secret-edit':async()=>{try{await navigator.clipboard.writeText(chatHistory.map(item=>`${item.time} ${item.role==='user'?'방문자':SeizeChat.personas[item.memberId].name}: ${item.text}`).join('\n'));$('chatStatus').textContent='현재 대화를 복사했습니다.'}catch{$('chatStatus').textContent='복사할 수 없습니다.'}},'secret-search':()=>openPasswordDialog(),'secret-help':()=>{$('chatStatus').textContent='메시지를 보내거나 Search에서 보호된 파일을 열 수 있습니다.'}
 };
 document.querySelectorAll('[data-menu]').forEach(button=>button.addEventListener('click',()=>{menuActions[button.dataset.menu]?.();sound()}));
 $('startButton').addEventListener('click',()=>{const menu=$('startMenu');menu.hidden=!menu.hidden;$('startButton').setAttribute('aria-expanded',String(!menu.hidden));sound()});
-$('startRestart').addEventListener('click',()=>{localStorage.removeItem('seize-concept-memory-v1');localStorage.removeItem('seize-secret-all-games-v1');localStorage.removeItem('seize-secret-score-v1');try{sessionStorage.removeItem(chatStorageKey);sessionStorage.removeItem(scoreStorageKey);sessionStorage.removeItem(scoreHintsKey)}catch{};location.reload()});
+$('startRestart').addEventListener('click',()=>{localStorage.removeItem('seize-concept-memory-v1');localStorage.removeItem('seize-secret-all-games-v1');localStorage.removeItem('seize-secret-score-v1');localStorage.removeItem('seize-secret-tiles-v2');try{sessionStorage.removeItem(chatStorageKey);sessionStorage.removeItem(scoreStorageKey);sessionStorage.removeItem(scoreHintsKey)}catch{};location.reload()});
 function closeShutdownDialog(){$('shutdownDialog').hidden=true;$('startButton').focus()}
 $('startClose').addEventListener('click',()=>{$('startMenu').hidden=true;$('startButton').setAttribute('aria-expanded','false');$('shutdownDialog').hidden=false;$('shutdownOkay').focus();sound('error')});
 for(const id of ['shutdownClose','shutdownOkay'])$(id).addEventListener('click',closeShutdownDialog);

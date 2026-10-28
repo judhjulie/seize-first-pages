@@ -1,32 +1,22 @@
-/* Two joined eighth notes, encoded as a uniquely solvable 15 × 15 nonogram. */
+/* A five-by-five swap puzzle for the lost score. */
 (function(root){
- const pattern=[
-  '...............',
-  '......########.',
-  '......########.',
-  '......#......#.',
-  '......#......#.',
-  '......#......#.',
-  '......#......#.',
-  '......#......#.',
-  '......#......#.',
-  '......#......#.',
-  '...#####..#####',
-  '..######.######',
-  '..######.######',
-  '...####...####.',
-  '....##.....##..'
- ];
- const size=15;
- const solution=pattern.flatMap(row=>[...row].map(cell=>cell==='#'?1:0));
- function runs(values){let n=0;const clue=[];for(const value of [...values,0]){if(value)n++;else if(n){clue.push(n);n=0}}return clue.length?clue:[0]}
- const rowClues=pattern.map(row=>runs([...row].map(cell=>cell==='#'?1:0)));
- const columnClues=Array.from({length:size},(_,column)=>runs(pattern.map(row=>row[column]==='#'?1:0)));
- const filledCount=solution.reduce((sum,cell)=>sum+cell,0);
- function isSolved(state){return state.length===solution.length&&solution.every((cell,index)=>(state[index]===1?1:0)===cell)}
- function lineCorrect(state,index,axis){return Array.from({length:size},(_,n)=>axis==='row'?index*size+n:n*size+index).every(cell=>(state[cell]===1?1:0)===solution[cell])}
- function hintRow(state){for(let row=0;row<size;row++){if(!lineCorrect(state,row,'row')){const next=Array.from(state);for(let column=0;column<size;column++)next[row*size+column]=solution[row*size+column]?1:2;return {row,state:next}}}return null}
- const api={size,pattern,solution,rowClues,columnClues,filledCount,runs,isSolved,lineCorrect,hintRow};
+ const size=5;
+ const count=size*size;
+ const solved=Array.from({length:count},(_,index)=>index);
+ function isValid(state){return Array.isArray(state)&&state.length===count&&state.every(value=>Number.isInteger(value)&&value>=0&&value<count)&&new Set(state).size===count}
+ function isSolved(state){return isValid(state)&&state.every((value,index)=>value===index)}
+ function swap(state,a,b){if(!isValid(state)||a<0||b<0||a>=count||b>=count)return state;const next=state.slice();[next[a],next[b]]=[next[b],next[a]];return next}
+ function shuffle(random=Math.random){
+  let state;
+  for(let attempt=0;attempt<5;attempt++){
+   state=solved.slice();
+   for(let index=count-1;index>0;index--){const other=Math.floor(random()*(index+1));[state[index],state[other]]=[state[other],state[index]]}
+   if(state.filter((tile,index)=>tile!==index).length>=15)return state;
+  }
+  return solved.map((_,index)=>(index+7)%count);
+ }
+ function hint(state){if(!isValid(state))return null;const target=state.findIndex((tile,index)=>tile!==index);if(target<0)return null;return {target,state:swap(state,target,state.indexOf(target))}}
+ const api={size,count,solved,isValid,isSolved,swap,shuffle,hint};
  if(typeof module!=='undefined'&&module.exports)module.exports=api;
  root.SeizeScorePuzzle=api;
 })(typeof window!=='undefined'?window:globalThis);

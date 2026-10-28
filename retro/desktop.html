@@ -7,7 +7,7 @@
 <meta name="description" content="SEIZE FIRST¿ — 컴퓨터 바탕화면 속 음악, 앨범, 멤버와 컨셉 포토를 탐색하세요.">
 <title>SEIZE / FIRST¿ — Desktop</title>
 <link rel="icon" href="assets/seize-logo.png">
-<link rel="stylesheet" href="assets/retro-desktop.css?v=secret-disc-3">
+<link rel="stylesheet" href="assets/retro-desktop.css?v=tile-puzzle-1">
 </head>
 <body>
 <a class="skip-link" href="#desktop">바탕화면으로 이동</a>
@@ -69,12 +69,12 @@
     <div id="conceptTabs" class="concept-tabs" aria-label="컨셉 포토 메뉴" hidden><button id="conceptPhotosTab" type="button" aria-pressed="true">PHOTO ARCHIVE</button><button id="conceptQuizTab" type="button" aria-pressed="false">마지막 기록 <span id="conceptQuizBadge">미완료</span></button></div>
     <div id="conceptGallery" class="window-body concept-gallery" hidden><div class="concept-hero"><img id="conceptImage" src="assets/group-approved-v6.png" alt="체육관 바닥에 함께 앉은 SEIZE 다섯 멤버의 사진"><button id="conceptPrev" class="concept-nav" aria-label="이전 사진">‹</button><button id="conceptNext" class="concept-nav" aria-label="다음 사진">›</button></div><div class="concept-meta"><div><small id="conceptCount">01 / 09</small><h2 id="conceptTitle">GROUP</h2></div><span>SEIZE · FIRST¿</span></div><div id="conceptStrip" class="concept-strip" aria-label="컨셉 사진 선택"></div></div>
     <div id="conceptQuiz" class="window-body concept-quiz" hidden>
-      <div class="concept-quiz-head"><small>LAST RECORD / 15 × 15 SCORE</small><h2>잃어버린 악보</h2><p>행과 열의 숫자만큼 연속된 칸을 채워 두 개의 음표를 복원하세요. 숫자 사이에는 빈칸이 하나 이상 있습니다.</p></div>
+      <div class="concept-quiz-head"><small>LAST RECORD / 5 × 5 PIECES</small><h2>잃어버린 악보</h2><p>흩어진 악보 조각 25개를 제자리로 돌려놓으세요. 조각 두 개를 차례로 누르면 자리가 바뀝니다.</p></div>
       <div id="scorePlay" class="score-play">
-        <div class="score-toolbar"><div class="score-tools" role="group" aria-label="악보 퍼즐 도구"><button id="scoreFill" type="button" aria-pressed="true">■ 채우기</button><button id="scoreCross" type="button" aria-pressed="false">× 비우기</button><button id="scoreErase" type="button" aria-pressed="false">지우기</button></div><button id="scoreHint" class="retro-button" type="button">한 줄 힌트</button><button id="scoreReset" class="retro-button" type="button">초기화</button></div>
-        <div class="game-progress"><span id="scoreProgress">악보 0 / 0칸</span><span id="scoreHints">힌트 0회</span></div>
-        <div class="score-board-scroll"><div class="score-board"><div class="score-corner" aria-hidden="true">♫</div><div id="scoreColumnClues" class="score-column-clues" aria-label="열 숫자 단서"></div><div id="scoreRowClues" class="score-row-clues" aria-label="행 숫자 단서"></div><div id="scoreGrid" class="score-grid" role="grid" aria-label="15행 15열 악보 퍼즐"></div></div></div>
-        <p id="scoreFeedback" class="score-feedback" role="status">칸을 누르거나 끌어 채우세요. 오른쪽 클릭은 X 표시, 키보드 방향키는 칸 이동입니다.</p>
+        <div class="score-toolbar"><button id="scorePreview" class="retro-button" type="button" aria-pressed="false">원본 보기</button><button id="scoreHint" class="retro-button" type="button">한 조각 힌트</button><button id="scoreReset" class="retro-button" type="button">다시 섞기</button></div>
+        <div class="game-progress"><span id="scoreProgress">제자리 0 / 25</span><span id="scoreHints">힌트 0회</span></div>
+        <div class="score-puzzle-layout"><div class="score-board-scroll"><div id="scoreGrid" class="score-grid" role="grid" aria-label="5행 5열 악보 조각 퍼즐"></div></div><div id="scoreReference" class="score-reference" hidden><img src="assets/lost-score-puzzle.svg" alt="완성된 악보의 원본"><small>ORIGINAL / 00:00</small></div></div>
+        <p id="scoreFeedback" class="score-feedback" role="status">조각을 누른 뒤 바꿀 조각을 누르세요. 키보드는 방향키로 이동하고 Enter로 선택합니다.</p>
       </div>
       <div id="quizComplete" class="game-complete score-complete" role="status" hidden><img src="assets/first-cover-official.png" alt="FIRST¿ 앨범 커버"><div><strong>악보 복원 완료</strong><p>마지막 음표가 이어지자 바탕화면에 비밀 폴더가 나타났습니다.</p><button id="openSecretFile" class="retro-button" type="button">바탕화면에서 확인</button></div></div>
     </div>
@@ -123,7 +123,7 @@
 <audio id="deepAudio" src="assets/choir.mp3" preload="none" loop></audio>
 <audio id="easterAudio" src="assets/choir.mp3" preload="none"></audio>
 <script src="assets/secret-chat.js?v=news-window-1"></script>
-<script src="assets/score-puzzle.js?v=news-window-1"></script>
-<script src="assets/retro-desktop.js?v=secret-disc-3"></script>
+<script src="assets/score-puzzle.js?v=tile-puzzle-1"></script>
+<script src="assets/retro-desktop.js?v=tile-puzzle-1"></script>
 </body>
 </html>

@@ -1,5 +1,45 @@
 const $=id=>document.getElementById(id);
 const desktop=$('desktop');
+// iOS Safari can drop the click after a touch inside a scrolling window.
+// Activate the tapped control only when the browser did not dispatch its own click.
+const nativeTouchClicks=new WeakMap();
+const fallbackTouchClicks=new WeakMap();
+const latestTouchStarts=new WeakMap();
+let activeTouch=null;
+const touchControl=target=>target instanceof Element?target.closest('button,a,[role="button"]'):null;
+document.addEventListener('click',event=>{
+ const control=touchControl(event.target);
+ if(!control||!event.isTrusted)return;
+ const fallbackAt=fallbackTouchClicks.get(control)||0;
+ if(fallbackAt&&performance.now()-fallbackAt<700&&(latestTouchStarts.get(control)||0)<=fallbackAt){event.preventDefault();event.stopImmediatePropagation();return}
+ nativeTouchClicks.set(control,performance.now());
+},true);
+document.addEventListener('touchstart',event=>{
+ if(event.touches.length!==1){activeTouch=null;return}
+ const control=touchControl(event.target);
+ if(!control||!desktop.contains(control)||control.disabled)return;
+ const touch=event.touches[0];
+ const started=performance.now();latestTouchStarts.set(control,started);
+ activeTouch={control,id:touch.identifier,x:touch.clientX,y:touch.clientY,started,moved:false};
+},{capture:true,passive:true});
+document.addEventListener('touchmove',event=>{
+ if(!activeTouch)return;
+ const touch=Array.from(event.touches).find(item=>item.identifier===activeTouch.id);
+ if(touch&&Math.hypot(touch.clientX-activeTouch.x,touch.clientY-activeTouch.y)>12)activeTouch.moved=true;
+},{capture:true,passive:true});
+document.addEventListener('touchend',event=>{
+ const touch=activeTouch;
+ if(!touch||!Array.from(event.changedTouches).some(item=>item.identifier===touch.id))return;
+ activeTouch=null;
+ if(touch.moved)return;
+ setTimeout(()=>{
+  const control=touch.control;
+  if(!control.isConnected||control.disabled||(nativeTouchClicks.get(control)||0)>touch.started)return;
+  fallbackTouchClicks.set(control,performance.now());
+  control.click();
+ },380);
+},{capture:true,passive:true});
+document.addEventListener('touchcancel',()=>{activeTouch=null},{capture:true,passive:true});
 const windows=Object.fromEntries([...document.querySelectorAll('[data-window]')].map(el=>[el.dataset.window,el]));
 const labels={music:'CD Player',photos:'Members',album:'FIRST¿ Album',concept:'Concept Photos',explore:'Explore',trash:'휴지통',secret:'비밀 폴더'};
 const tracks=[
@@ -73,7 +113,7 @@ function taskbar(){
   bar.append(button);
  });
 }
-function focusWindow(id){const el=windows[id];if(el.hidden)return;el.style.zIndex=String(++z);focused=id;Object.entries(windows).forEach(([key,w])=>w.classList.toggle('active',key===id));taskbar()}
+function focusWindow(id){const el=windows[id];if(el.hidden||focused===id&&el.classList.contains('active'))return;el.style.zIndex=String(++z);focused=id;Object.entries(windows).forEach(([key,w])=>w.classList.toggle('active',key===id));taskbar()}
 function openWindow(id){if(!windows[id]||(id==='secret'&&!secretUnlocked))return;const el=windows[id],wasHidden=el.hidden;el.hidden=false;el.classList.remove('minimized');el.style.display='flex';focusWindow(id);sound('open');if(id==='secret'&&wasHidden)enterSecret();if(id==='explore')$('exploreQuery').focus()}
 function minimize(id){const el=windows[id];el.classList.add('minimized');el.style.display='none';focused=null;taskbar();sound()}
 function closeWindow(id){const el=windows[id];el.hidden=true;el.classList.remove('minimized');el.style.display='';if(id==='secret')leaveSecret();if(id==='music'){audio.pause();deep.pause();syncPlay()}focused=null;taskbar();sound()}
@@ -99,9 +139,10 @@ document.querySelectorAll('.desktop-icon').forEach(icon=>{
 });
 document.querySelectorAll('[data-action]').forEach(btn=>btn.addEventListener('click',e=>{e.stopPropagation();const id=btn.closest('[data-window]').dataset.window;if(btn.dataset.action==='close')closeWindow(id);if(btn.dataset.action==='min')minimize(id);if(btn.dataset.action==='max')maximize(id)}));
 Object.entries(windows).forEach(([id,el])=>{
- el.addEventListener('pointerdown',()=>focusWindow(id));
+ // Changing z-index during a touch can cancel Safari's following click on a child control.
+ el.addEventListener('pointerdown',event=>{if(event.pointerType!=='touch')focusWindow(id)});
  const bar=el.querySelector('.titlebar');let drag=null;
- bar.addEventListener('pointerdown',e=>{if(e.target.closest('button')||el.classList.contains('maximized')||matchMedia('(max-width:740px)').matches)return;drag={x:e.clientX,y:e.clientY,left:el.offsetLeft,top:el.offsetTop};bar.setPointerCapture(e.pointerId);focusWindow(id)});
+ bar.addEventListener('pointerdown',e=>{if(e.pointerType==='touch'||e.target.closest('button')||el.classList.contains('maximized')||matchMedia('(max-width:740px)').matches)return;drag={x:e.clientX,y:e.clientY,left:el.offsetLeft,top:el.offsetTop};bar.setPointerCapture(e.pointerId);focusWindow(id)});
  bar.addEventListener('pointermove',e=>{if(!drag)return;const x=Math.max(0,Math.min(innerWidth-el.offsetWidth,drag.left+e.clientX-drag.x));const y=Math.max(0,Math.min(innerHeight-el.offsetHeight-37,drag.top+e.clientY-drag.y));el.style.left=x+'px';el.style.top=y+'px'});
  bar.addEventListener('pointerup',()=>drag=null);bar.addEventListener('pointercancel',()=>drag=null);
  let resizing=null;
@@ -120,7 +161,7 @@ Object.entries(windows).forEach(([id,el])=>{
   el.style.cursor=edges.length===2?(edges.join('-')==='left-top'||edges.join('-')==='right-bottom'?'nwse-resize':'nesw-resize'):edges.length?edges[0]==='left'||edges[0]==='right'?'ew-resize':'ns-resize':'';
  });
  el.addEventListener('pointerdown',e=>{
-  if(e.target.closest('button,input,textarea,select')||el.classList.contains('maximized')||matchMedia('(max-width:740px)').matches)return;
+  if(e.pointerType==='touch'||e.target.closest('button,input,textarea,select')||el.classList.contains('maximized')||matchMedia('(max-width:740px)').matches)return;
   const rect=el.getBoundingClientRect(),edges=[e.clientX-rect.left<9?'left':rect.right-e.clientX<9?'right':'',e.clientY-rect.top<9?'top':rect.bottom-e.clientY<9?'bottom':''].filter(Boolean);
   if(!edges.length)return;e.preventDefault();e.stopPropagation();resizing={x:e.clientX,y:e.clientY,left:el.offsetLeft,top:el.offsetTop,width:el.offsetWidth,height:el.offsetHeight,edges};el.setPointerCapture(e.pointerId);focusWindow(id)
  },true);

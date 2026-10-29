@@ -96,7 +96,7 @@ const ledLight=new THREE.PointLight(0xa7f394,.7,.7);ledLight.position.copy(led.p
 
 // The website stays a real, interactive document inside the 3D monitor.
 const screen=document.createElement('div');screen.className='crt-screen';
-const frame=document.createElement('iframe');frame.src='desktop.html?v=mobile-touch-2';frame.title='SEIZE 웹사이트 — 화면 속 아이콘을 두 번 클릭해 탐색하세요';frame.loading='eager';frame.allow='autoplay';
+const frame=document.createElement('iframe');frame.src='desktop.html?v=mobile-touch-3';frame.title='SEIZE 웹사이트 — 화면 속 아이콘을 두 번 클릭해 탐색하세요';frame.loading='eager';frame.allow='autoplay';
 screen.appendChild(frame);
 const screenNoise=document.createElement('div');screenNoise.className='crt-noise';screenNoise.setAttribute('aria-hidden','true');screen.appendChild(screenNoise);
 const screenSweep=document.createElement('div');screenSweep.className='crt-sweep';screenSweep.setAttribute('aria-hidden','true');screen.appendChild(screenSweep);
@@ -115,7 +115,7 @@ const screenRaycaster=new THREE.Raycaster();
 let screenFocused=false;
 function setScreenFocus(focused){
  if(focused&&useDirectTouchScreen()){
-  window.location.assign('desktop.html?mobile=1&v=mobile-touch-2');
+  window.location.assign('desktop.html?mobile=1&v=mobile-touch-3');
   return;
  }
  screenFocused=focused;

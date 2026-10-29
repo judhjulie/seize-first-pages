@@ -320,3 +320,4 @@ img{display:block;max-width:100%}
  .return-computer:focus-visible{outline:3px solid #ffe167;outline-offset:-3px}
 }
 @media(any-pointer:coarse) and (min-width:741px){.return-computer{flex:none;display:grid;place-items:center;width:44px;height:30px;border:1px solid #a4c4e0;background:#225ab0;color:#fff;font:700 22px/1 Galmuri11,sans-serif;text-decoration:none}}
+@media(any-pointer:coarse){.desktop button,.desktop a,.desktop [role="button"]{touch-action:manipulation}.window-body{-webkit-overflow-scrolling:touch}}

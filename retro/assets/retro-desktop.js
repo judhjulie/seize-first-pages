@@ -78,9 +78,22 @@ function openWindow(id){if(!windows[id]||(id==='secret'&&!secretUnlocked))return
 function minimize(id){const el=windows[id];el.classList.add('minimized');el.style.display='none';focused=null;taskbar();sound()}
 function closeWindow(id){const el=windows[id];el.hidden=true;el.classList.remove('minimized');el.style.display='';if(id==='secret')leaveSecret();if(id==='music'){audio.pause();deep.pause();syncPlay()}focused=null;taskbar();sound()}
 function maximize(id){const el=windows[id];el.classList.toggle('maximized');focusWindow(id);sound()}
+let unlockNoticeTimer=0,unlockNoticeAction=null;
+function finishUnlockNotice(){
+ if($('unlockNotice').hidden)return;
+ clearTimeout(unlockNoticeTimer);$('unlockNotice').hidden=true;
+ const action=unlockNoticeAction;unlockNoticeAction=null;action?.();
+}
+function showUnlockNotice(step,message,onComplete){
+ clearTimeout(unlockNoticeTimer);unlockNoticeAction=onComplete;
+ $('unlockNoticeTitle').textContent=step;$('unlockNoticeMessage').textContent=message;
+ $('unlockNotice').hidden=false;$('unlockNoticeContinue').focus();sound('open');
+ unlockNoticeTimer=setTimeout(finishUnlockNotice,1750);
+}
+$('unlockNoticeContinue').addEventListener('click',finishUnlockNotice);
 document.querySelectorAll('.desktop-icon').forEach(icon=>{
  let timer;
- icon.addEventListener('click',()=>{document.querySelectorAll('.desktop-icon').forEach(x=>x.classList.toggle('selected',x===icon));if(matchMedia('(pointer:coarse)').matches){openWindow(icon.dataset.open);return}clearTimeout(timer);timer=setTimeout(()=>icon.classList.remove('selected'),900)});
+ icon.addEventListener('click',()=>{document.querySelectorAll('.desktop-icon').forEach(x=>x.classList.toggle('selected',x===icon));if(matchMedia('(any-pointer:coarse)').matches||navigator.maxTouchPoints>0||matchMedia('(max-width:740px)').matches){openWindow(icon.dataset.open);return}clearTimeout(timer);timer=setTimeout(()=>icon.classList.remove('selected'),900)});
  icon.addEventListener('dblclick',()=>openWindow(icon.dataset.open));
  icon.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openWindow(icon.dataset.open)}});
 });
@@ -88,7 +101,7 @@ document.querySelectorAll('[data-action]').forEach(btn=>btn.addEventListener('cl
 Object.entries(windows).forEach(([id,el])=>{
  el.addEventListener('pointerdown',()=>focusWindow(id));
  const bar=el.querySelector('.titlebar');let drag=null;
- bar.addEventListener('pointerdown',e=>{if(e.target.closest('button')||el.classList.contains('maximized')||matchMedia('(max-width:700px)').matches)return;drag={x:e.clientX,y:e.clientY,left:el.offsetLeft,top:el.offsetTop};bar.setPointerCapture(e.pointerId);focusWindow(id)});
+ bar.addEventListener('pointerdown',e=>{if(e.target.closest('button')||el.classList.contains('maximized')||matchMedia('(max-width:740px)').matches)return;drag={x:e.clientX,y:e.clientY,left:el.offsetLeft,top:el.offsetTop};bar.setPointerCapture(e.pointerId);focusWindow(id)});
  bar.addEventListener('pointermove',e=>{if(!drag)return;const x=Math.max(0,Math.min(innerWidth-el.offsetWidth,drag.left+e.clientX-drag.x));const y=Math.max(0,Math.min(innerHeight-el.offsetHeight-37,drag.top+e.clientY-drag.y));el.style.left=x+'px';el.style.top=y+'px'});
  bar.addEventListener('pointerup',()=>drag=null);bar.addEventListener('pointercancel',()=>drag=null);
  let resizing=null;
@@ -102,12 +115,12 @@ Object.entries(windows).forEach(([id,el])=>{
    if(resizing.edges.includes('top')){const top=Math.max(0,Math.min(resizing.top+resizing.height-minHeight,resizing.top+dy));el.style.top=top+'px';el.style.height=(resizing.height+resizing.top-top)+'px'}else if(resizing.edges.includes('bottom'))el.style.height=height+'px';
    return;
   }
-  if(el.classList.contains('maximized')||matchMedia('(max-width:700px)').matches){el.style.cursor='';return}
+  if(el.classList.contains('maximized')||matchMedia('(max-width:740px)').matches){el.style.cursor='';return}
   const rect=el.getBoundingClientRect(),edges=[e.clientX-rect.left<9?'left':rect.right-e.clientX<9?'right':'',e.clientY-rect.top<9?'top':rect.bottom-e.clientY<9?'bottom':''].filter(Boolean);
   el.style.cursor=edges.length===2?(edges.join('-')==='left-top'||edges.join('-')==='right-bottom'?'nwse-resize':'nesw-resize'):edges.length?edges[0]==='left'||edges[0]==='right'?'ew-resize':'ns-resize':'';
  });
  el.addEventListener('pointerdown',e=>{
-  if(e.target.closest('button,input,textarea,select')||el.classList.contains('maximized')||matchMedia('(max-width:700px)').matches)return;
+  if(e.target.closest('button,input,textarea,select')||el.classList.contains('maximized')||matchMedia('(max-width:740px)').matches)return;
   const rect=el.getBoundingClientRect(),edges=[e.clientX-rect.left<9?'left':rect.right-e.clientX<9?'right':'',e.clientY-rect.top<9?'top':rect.bottom-e.clientY<9?'bottom':''].filter(Boolean);
   if(!edges.length)return;e.preventDefault();e.stopPropagation();resizing={x:e.clientX,y:e.clientY,left:el.offsetLeft,top:el.offsetTop,width:el.offsetWidth,height:el.offsetHeight,edges};el.setPointerCapture(e.pointerId);focusWindow(id)
  },true);
@@ -409,12 +422,15 @@ $('conceptPrev').addEventListener('click',()=>{showConcept(conceptIndex-1);sound
 $('conceptNext').addEventListener('click',()=>{showConcept(conceptIndex+1);sound()});
 $('conceptGoQuiz').addEventListener('click',()=>{openWindow('photos');showMemberTab('game')});
 function unlockConcept(){
- conceptUnlocked=true;localStorage.setItem('seize-concept-memory-v1','1');$('memberGameBadge').textContent='PHOTO OPEN';
- $('gameComplete').hidden=false;$('memberStatus').textContent='Memory complete · Photos unlocked';syncConceptLock();sound('open');
- setTimeout(()=>{openWindow('concept');showConceptTab('photos')},600);
+ if(conceptUnlocked)return;
+ conceptUnlocked=true;localStorage.setItem('seize-concept-memory-v1','1');
+ showUnlockNotice('COMPLETE / 01','컨셉 포토 잠금이 해제되었습니다.',()=>{
+  $('memberGameBadge').textContent='PHOTO OPEN';$('gameComplete').hidden=false;$('memberStatus').textContent='Memory complete · Photos unlocked';syncConceptLock();
+  openWindow('concept');showConceptTab('photos');
+ });
 }
 const scoreStorageKey='seize-score-tiles-v2',scoreHintsKey='seize-score-tile-hints-v2';
-let scoreState=SeizeScorePuzzle.shuffle(),scoreHints=0,scoreSelected=-1,scoreActiveIndex=0,scoreDragFrom=-1;
+let scoreState=SeizeScorePuzzle.shuffle(),scoreHints=0,scoreSelected=-1,scoreActiveIndex=0,scoreDragFrom=-1,scoreUnlockPending=false;
 try{const saved=JSON.parse(sessionStorage.getItem(scoreStorageKey)||'null');if(SeizeScorePuzzle.isValid(saved))scoreState=saved;scoreHints=Number(sessionStorage.getItem(scoreHintsKey))||0}catch{}
 if(secretUnlocked)scoreState=SeizeScorePuzzle.solved.slice();
 function saveScore(){try{sessionStorage.setItem(scoreStorageKey,JSON.stringify(scoreState));sessionStorage.setItem(scoreHintsKey,String(scoreHints))}catch{}}
@@ -428,19 +444,22 @@ function refreshScore(){
  $('scoreProgress').textContent=`제자리 ${scoreState.filter((tile,index)=>tile===index).length} / 25`;
  $('scoreHints').textContent=`힌트 ${scoreHints}회`;
  saveScore();
- if(!secretUnlocked&&conceptUnlocked&&SeizeScorePuzzle.isSolved(scoreState)){
-  unlockSecret();$('scorePlay').hidden=true;$('quizComplete').hidden=false;$('openSecretFile').focus();sound('open');
+ if(!secretUnlocked&&!scoreUnlockPending&&conceptUnlocked&&SeizeScorePuzzle.isSolved(scoreState)){
+  scoreUnlockPending=true;
+  showUnlockNotice('COMPLETE / 02','비밀 폴더를 발견했습니다.',()=>{
+   unlockSecret();$('scorePlay').hidden=true;$('quizComplete').hidden=false;$('openSecretFile').focus();
+  });
  }
 }
 function focusScoreCell(index){const buttons=$('scoreGrid').children;buttons[scoreActiveIndex].tabIndex=-1;scoreActiveIndex=index;buttons[index].tabIndex=0;buttons[index].focus({preventScroll:true})}
 function swapScoreTiles(first,second){
- if(secretUnlocked||first===second)return;
+ if(secretUnlocked||scoreUnlockPending||first===second)return;
  scoreState=SeizeScorePuzzle.swap(scoreState,first,second);scoreSelected=-1;
  $('scoreFeedback').textContent=`${Math.floor(first/5)+1}행 ${first%5+1}열과 ${Math.floor(second/5)+1}행 ${second%5+1}열의 조각을 바꿨습니다.`;
  refreshScore();
 }
 function chooseScoreTile(index){
- if(secretUnlocked)return;
+ if(secretUnlocked||scoreUnlockPending)return;
  focusScoreCell(index);
  if(scoreSelected<0){scoreSelected=index;$('scoreFeedback').textContent='바꿀 조각을 하나 더 선택하세요.';refreshScore();return}
  if(scoreSelected===index){scoreSelected=-1;$('scoreFeedback').textContent='선택을 취소했습니다.';refreshScore();return}
@@ -479,10 +498,20 @@ const menuActions={
 document.querySelectorAll('[data-menu]').forEach(button=>button.addEventListener('click',()=>{menuActions[button.dataset.menu]?.();sound()}));
 $('startButton').addEventListener('click',()=>{const menu=$('startMenu');menu.hidden=!menu.hidden;$('startButton').setAttribute('aria-expanded',String(!menu.hidden));sound()});
 $('startRestart').addEventListener('click',()=>{localStorage.removeItem('seize-concept-memory-v1');localStorage.removeItem('seize-secret-all-games-v1');localStorage.removeItem('seize-secret-score-v1');localStorage.removeItem('seize-secret-tiles-v2');try{sessionStorage.removeItem(chatStorageKey);sessionStorage.removeItem(scoreStorageKey);sessionStorage.removeItem(scoreHintsKey)}catch{};location.reload()});
-function closeShutdownDialog(){$('shutdownDialog').hidden=true;$('startButton').focus()}
-$('startClose').addEventListener('click',()=>{$('startMenu').hidden=true;$('startButton').setAttribute('aria-expanded','false');$('shutdownDialog').hidden=false;$('shutdownOkay').focus();sound('error')});
+let shutdownTimer=0,shutdownPending=false;
+function cancelShutdownSequence(){clearTimeout(shutdownTimer);shutdownPending=false;desktop.classList.remove('shutdown-glitch');desktop.querySelector('.shutdown-interference').hidden=true}
+function closeShutdownDialog(){cancelShutdownSequence();$('shutdownDialog').hidden=true;$('startButton').focus()}
+$('startClose').addEventListener('click',()=>{
+ $('startMenu').hidden=true;$('startButton').setAttribute('aria-expanded','false');
+ cancelShutdownSequence();shutdownPending=true;desktop.querySelector('.shutdown-interference').hidden=false;
+ desktop.classList.add('shutdown-glitch');sound('error');
+ shutdownTimer=setTimeout(()=>{
+  cancelShutdownSequence();$('shutdownDialog').hidden=false;$('shutdownOkay').focus();sound('error');
+ },matchMedia('(prefers-reduced-motion: reduce)').matches?80:680);
+});
+document.addEventListener('pointerdown',event=>{if(shutdownPending&&!event.target.closest('#startClose'))cancelShutdownSequence()},true);
 for(const id of ['shutdownClose','shutdownOkay'])$(id).addEventListener('click',closeShutdownDialog);
 document.querySelectorAll('[data-menu-open]').forEach(b=>b.addEventListener('click',()=>{openWindow(b.dataset.menuOpen);$('startMenu').hidden=true;$('startButton').setAttribute('aria-expanded','false')}));
 $('soundToggle').addEventListener('click',()=>{soundOn=!soundOn;$('soundToggle').setAttribute('aria-pressed',String(soundOn));$('soundToggle').setAttribute('aria-label',soundOn?'효과음 끄기':'효과음 켜기');$('soundToggle').textContent=soundOn?'♪':'×';if(!soundOn){deep.pause();easterAudio.pause()}else if((stormActive&&stormReveal)||!$('easterDialog').hidden)easterAudio.play().catch(()=>{});else if(!windows.secret.hidden)deep.play().catch(()=>{})});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(stormActive){finishErrorStorm();return}if(!$('shutdownDialog').hidden){closeShutdownDialog();return}if(!$('passwordDialog').hidden){closePasswordDialog();return}if(!$('easterDialog').hidden){closeEasterDialog();return}if(!$('errorDialog').hidden){$('errorDialog').hidden=true;return}if(!$('startMenu').hidden){$('startMenu').hidden=true;$('startButton').setAttribute('aria-expanded','false');return}if(focused)closeWindow(focused)}if((e.key==='ArrowLeft'||e.key==='ArrowRight')&&$('passwordDialog').hidden&&$('easterDialog').hidden&&!e.target.matches('input')){if(focused==='photos'&&!$('memberProfilePanel').hidden){e.preventDefault();showMember(memberIndex+(e.key==='ArrowRight'?1:-1))}if(focused==='concept'&&conceptUnlocked&&!$('conceptGallery').hidden){e.preventDefault();showConcept(conceptIndex+(e.key==='ArrowRight'?1:-1))}}});
+document.addEventListener('keydown',e=>{if(!$('unlockNotice').hidden){if(e.key==='Escape'||e.key==='Enter'){e.preventDefault();finishUnlockNotice()}else if(e.key==='Tab'){e.preventDefault();$('unlockNoticeContinue').focus()}return}if(e.key==='Escape'){if(shutdownPending){cancelShutdownSequence();$('startButton').focus();return}if(stormActive){finishErrorStorm();return}if(!$('shutdownDialog').hidden){closeShutdownDialog();return}if(!$('passwordDialog').hidden){closePasswordDialog();return}if(!$('easterDialog').hidden){closeEasterDialog();return}if(!$('errorDialog').hidden){$('errorDialog').hidden=true;return}if(!$('startMenu').hidden){$('startMenu').hidden=true;$('startButton').setAttribute('aria-expanded','false');return}if(focused)closeWindow(focused)}if((e.key==='ArrowLeft'||e.key==='ArrowRight')&&$('passwordDialog').hidden&&$('easterDialog').hidden&&!e.target.matches('input')){if(focused==='photos'&&!$('memberProfilePanel').hidden){e.preventDefault();showMember(memberIndex+(e.key==='ArrowRight'?1:-1))}if(focused==='concept'&&conceptUnlocked&&!$('conceptGallery').hidden){e.preventDefault();showConcept(conceptIndex+(e.key==='ArrowRight'?1:-1))}}});
 document.addEventListener('visibilitychange',()=>{if(document.hidden){audio.pause();deep.pause();easterAudio.pause()}else if(soundOn&&!$('easterDialog').hidden)easterAudio.play().catch(()=>{});else if(!windows.secret.hidden&&soundOn&&!stormActive)deep.play().catch(()=>{})});

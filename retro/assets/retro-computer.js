@@ -7,6 +7,7 @@ const webglLayer=document.getElementById('webglLayer');
 const cssLayer=document.getElementById('cssLayer');
 const loadingState=document.getElementById('loadingState');
 const experience=document.getElementById('experience');
+const useDirectTouchScreen=()=>window.matchMedia('(any-pointer:coarse)').matches||navigator.maxTouchPoints>0||window.innerWidth<=740;
 const scene=new THREE.Scene();
 scene.background=new THREE.Color(0x06090e);
 const cssScene=new THREE.Scene();
@@ -95,7 +96,7 @@ const ledLight=new THREE.PointLight(0xa7f394,.7,.7);ledLight.position.copy(led.p
 
 // The website stays a real, interactive document inside the 3D monitor.
 const screen=document.createElement('div');screen.className='crt-screen';
-const frame=document.createElement('iframe');frame.src='desktop.html';frame.title='SEIZE 웹사이트 — 화면 속 아이콘을 두 번 클릭해 탐색하세요';frame.loading='eager';frame.allow='autoplay';
+const frame=document.createElement('iframe');frame.src='desktop.html?v=mobile-touch-2';frame.title='SEIZE 웹사이트 — 화면 속 아이콘을 두 번 클릭해 탐색하세요';frame.loading='eager';frame.allow='autoplay';
 screen.appendChild(frame);
 const screenNoise=document.createElement('div');screenNoise.className='crt-noise';screenNoise.setAttribute('aria-hidden','true');screen.appendChild(screenNoise);
 const screenSweep=document.createElement('div');screenSweep.className='crt-sweep';screenSweep.setAttribute('aria-hidden','true');screen.appendChild(screenSweep);
@@ -106,13 +107,38 @@ const screenObject=new CSS3DObject(screen);
 screenObject.position.set(0,2.04,.84);
 screenObject.scale.set(4.65/1000,3.43/740,1);
 cssScene.add(screenObject);
+// On phones, a raycast catches taps even when the transformed iframe blocks DOM pointer events.
+const screenHitTarget=new THREE.Mesh(new THREE.PlaneGeometry(4.78,3.52),new THREE.MeshBasicMaterial({side:THREE.DoubleSide}));
+screenHitTarget.position.set(0,2.04,.84);
+screenHitTarget.updateMatrixWorld();
+const screenRaycaster=new THREE.Raycaster();
 let screenFocused=false;
 function setScreenFocus(focused){
+ if(focused&&useDirectTouchScreen()){
+  window.location.assign('desktop.html?mobile=1&v=mobile-touch-2');
+  return;
+ }
  screenFocused=focused;
  experience.classList.toggle('is-screen-focused',focused);
  screenEnter.hidden=focused;
 }
 screenEnter.addEventListener('click',()=>setScreenFocus(true));
+let mobileTapStart=null;
+stage.addEventListener('pointerdown',event=>{
+ if(!useDirectTouchScreen()||screenFocused)return;
+ mobileTapStart={id:event.pointerId,x:event.clientX,y:event.clientY};
+},true);
+stage.addEventListener('pointerup',event=>{
+ if(!mobileTapStart||mobileTapStart.id!==event.pointerId||screenFocused)return;
+ const moved=Math.hypot(event.clientX-mobileTapStart.x,event.clientY-mobileTapStart.y);
+ mobileTapStart=null;
+ if(moved>14)return;
+ const rect=stage.getBoundingClientRect();
+ const point=new THREE.Vector2((event.clientX-rect.left)/rect.width*2-1,1-(event.clientY-rect.top)/rect.height*2);
+ screenRaycaster.setFromCamera(point,camera);
+ if(screenRaycaster.intersectObject(screenHitTarget).length){event.preventDefault();setScreenFocus(true)}
+},true);
+stage.addEventListener('pointercancel',()=>{mobileTapStart=null},true);
 stage.addEventListener('pointerdown',event=>{
  if(screenFocused&&!screen.contains(event.target))setScreenFocus(false);
 });

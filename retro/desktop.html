@@ -7,7 +7,7 @@
 <meta name="description" content="SEIZE FIRST¿ — 컴퓨터 바탕화면 속 음악, 앨범, 멤버와 컨셉 포토를 탐색하세요.">
 <title>SEIZE / FIRST¿ — Desktop</title>
 <link rel="icon" href="assets/seize-logo.png">
-<link rel="stylesheet" href="assets/retro-desktop.css?v=tile-puzzle-1">
+<link rel="stylesheet" href="assets/retro-desktop.css?v=mobile-touch-2">
 </head>
 <body>
 <a class="skip-link" href="#desktop">바탕화면으로 이동</a>
@@ -15,6 +15,7 @@
   <div class="wallpaper" aria-hidden="true"><div class="water-rays"></div><div class="floor"></div></div>
   <div class="flood-transition" aria-hidden="true"></div>
   <div class="screen-grain" aria-hidden="true"></div>
+  <div class="shutdown-interference" aria-hidden="true" hidden></div>
   <div class="desktop-caption"><img src="assets/seize-logo.png" alt="SEIZE"></div>
   <div class="desktop-icons" aria-label="프로그램">
     <button class="desktop-icon" data-open="music" aria-label="음악 열기, 두 번 클릭"><img src="assets/retro-icons/music.svg" alt=""><span>음악</span></button>
@@ -109,6 +110,7 @@
     <div class="statusbar"><span id="chatStatus" role="status">연결됨 · 메시지를 입력하세요</span><span>LOCAL CHANNEL</span></div>
   </section>
 
+  <div id="unlockNotice" class="unlock-notice" role="alertdialog" aria-modal="true" aria-labelledby="unlockNoticeTitle" aria-describedby="unlockNoticeMessage" hidden><div class="unlock-notice-card"><div class="titlebar"><strong id="unlockNoticeTitle">COMPLETE</strong></div><div class="unlock-notice-body"><span class="unlock-notice-mark" aria-hidden="true">✓</span><p id="unlockNoticeMessage"></p></div><div class="unlock-notice-actions"><button id="unlockNoticeContinue" class="retro-button" type="button">계속</button></div></div></div>
   <div id="loadingDialog" class="loading-dialog" role="status" aria-label="파일 복구 중" hidden><div class="titlebar"><strong>Recovering file...</strong></div><p>Loading...</p><div class="loading-meter"><span></span></div></div>
   <div id="errorDialog" class="error-dialog" role="alertdialog" aria-label="시스템 오류" aria-modal="true" hidden><div class="titlebar"><strong>System message</strong><button id="errorClose" aria-label="오류창 닫기">×</button></div><div class="error-body"><span class="error-mark">!</span><p>알 수 없는 파일을 복구했습니다.<br><small>기록 위치를 확인할 수 없습니다.</small></p></div><button id="errorOkay" class="retro-button">OK</button></div>
   <div id="shutdownDialog" class="error-dialog shutdown-dialog" role="alertdialog" aria-labelledby="shutdownTitle" aria-modal="true" hidden><div class="titlebar"><strong id="shutdownTitle">System Error</strong><button id="shutdownClose" aria-label="종료 오류창 닫기">×</button></div><div class="error-body"><span class="error-mark">!</span><p><strong>종료할 수 없습니다.</strong><br><small>아직 닫히지 않은 기록이 있습니다.</small></p></div><button id="shutdownOkay" class="retro-button">확인</button></div>
@@ -116,7 +118,7 @@
   <div id="errorStorm" class="error-storm" role="alertdialog" aria-modal="true" aria-labelledby="stormTitle" hidden><div id="errorStormWindows" class="error-storm-windows" aria-hidden="true"></div><div class="error-storm-front"><div class="titlebar"><strong id="stormTitle">System Error</strong><button id="stormClose" type="button" aria-label="오류창 닫기">×</button></div><div class="error-body"><span class="error-mark">!</span><p><strong>알 수 없는 신호가 감지되었습니다.</strong><br><small id="stormDetail">기록이 다른 창으로 복제되고 있습니다.</small></p></div><button id="stormOkay" class="retro-button" type="button">확인</button></div></div>
   <div id="easterDialog" class="easter-dialog" role="dialog" aria-modal="true" aria-labelledby="easterTitle" hidden><div class="titlebar"><strong data-glitch>UNLISTED FILE / 00:00</strong><button id="easterClose" aria-label="숨겨진 파일 닫기">×</button></div><div class="easter-body"><div class="easter-visual"><span data-glitch>RECOVERED</span><img class="easter-disc" src="assets/secret-cracked-cd-v2.png" alt="금이 가고 가장자리가 깨진 CD가 회전하는 모습"><small data-glitch>SEIZE / UNKNOWN RECORDING</small></div><div class="easter-copy"><span data-glitch>SECRET TRACK / SIREN SONG</span><h2 id="easterTitle" data-glitch aria-label="기록에 없는 목소리">기록에 없는 목소리</h2><p data-glitch>화면 밖까지 넘쳐온 노래. 첫 번째 노래가 끝난 뒤에도, 누군가의 목소리가 남아 있었다.</p></div></div></div>
 
-  <nav class="taskbar" aria-label="작업 표시줄"><button id="startButton" class="start-button" aria-label="전원 메뉴 열기" aria-haspopup="menu" aria-expanded="false"><span class="start-glyph" aria-hidden="true">⏻</span></button><div class="taskbar-apps" id="taskbarApps"></div><button id="soundToggle" class="tray-button" aria-label="효과음 끄기" aria-pressed="true">♪</button><span id="clock" class="clock"></span></nav>
+  <nav class="taskbar" aria-label="작업 표시줄"><button id="startButton" class="start-button" aria-label="전원 메뉴 열기" aria-haspopup="menu" aria-expanded="false"><span class="start-glyph" aria-hidden="true">⏻</span></button><div class="taskbar-apps" id="taskbarApps"></div><a id="returnToComputer" class="return-computer" href="index.html?v=mobile-touch-2" aria-label="3D 컴퓨터로 돌아가기">↩</a><button id="soundToggle" class="tray-button" aria-label="효과음 끄기" aria-pressed="true">♪</button><span id="clock" class="clock"></span></nav>
   <div id="startMenu" class="start-menu" role="menu" hidden><div class="start-side">SEIZE</div><div class="start-options"><button role="menuitem" data-menu-open="music">음악</button><button role="menuitem" data-menu-open="photos">멤버 소개</button><button role="menuitem" data-menu-open="album">앨범</button><button role="menuitem" data-menu-open="concept">컨셉 포토</button><button role="menuitem" data-menu-open="explore">Explore</button><button role="menuitem" data-menu-open="trash">휴지통</button><hr><button id="startRestart" role="menuitem">↻ 다시 시작</button><button id="startClose" role="menuitem">⏻ 종료하기</button></div></div>
 </main>
 <audio id="firstAudio" src="assets/first.mp3" preload="metadata"></audio>
@@ -124,6 +126,6 @@
 <audio id="easterAudio" src="assets/choir.mp3" preload="none"></audio>
 <script src="assets/secret-chat.js?v=news-window-1"></script>
 <script src="assets/score-puzzle.js?v=tile-puzzle-1"></script>
-<script src="assets/retro-desktop.js?v=tile-puzzle-1"></script>
+<script src="assets/retro-desktop.js?v=mobile-touch-2"></script>
 </body>
 </html>

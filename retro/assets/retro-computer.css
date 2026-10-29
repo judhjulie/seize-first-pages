@@ -26,12 +26,14 @@ button,a{-webkit-tap-highlight-color:transparent}
 .crt-cursor.is-clicking{transform:translate(0,0) scale(.82)}
 @keyframes crt-static{0%{transform:translate(0,0)}25%{transform:translate(12px,-8px)}50%{transform:translate(-9px,5px)}75%{transform:translate(7px,13px)}100%{transform:translate(-11px,-6px)}}
 @keyframes crt-sweep{0%,13%{transform:translateY(0);opacity:0}16%{opacity:.27}27%{transform:translateY(1010px);opacity:.1}28%,100%{transform:translateY(1010px);opacity:0}}
-.loading-state{position:absolute;z-index:5;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;align-items:center;gap:10px;padding:11px 14px;border:1px solid #63747c;background:#17212a;color:#d4e3e8;font-size:12px;white-space:nowrap;box-shadow:0 10px 30px #0008;transition:opacity .4s}
+.loading-state{position:absolute;z-index:5;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;align-items:center;gap:10px;padding:11px 14px;border:1px solid #63747c;background:#17212a;color:#d4e3e8;font-size:12px;white-space:nowrap;box-shadow:0 10px 30px #0008;transition:opacity .4s;pointer-events:none}
 .loading-state[hidden]{display:none}
 .loading-light{width:6px;height:6px;display:inline-block;border-radius:50%;background:#97dfc1;box-shadow:0 0 10px #97dfc1}
 .loading-light{animation:blink 1s steps(2) infinite}
 @keyframes blink{50%{opacity:.25}}
 @media(max-width:740px){
  .experience{min-height:420px}
+ .scene-stage{touch-action:none}
 }
+@media(any-pointer:coarse){.scene-stage{touch-action:none}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}

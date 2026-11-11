@@ -51,11 +51,11 @@ const tracks=[
  {number:'06',title:'수평선 너머',subtitle:'',info:'수평선 너머 · SEIZE / FIRST¿'}
 ];
 const members=[
- {id:'siwoo',name:'SIWOO',file:'pixel-siwoo-v1.png',alt:'소매를 고쳐 잡는 시우',age:21,role:'리더',bio:'차분하고 책임감 강한 리더. 친해지면 의외로 장난기가 많다.',traits:'차분함 · 책임감 · 장난기',line:'문을 열어둘게.',caption:'At the doorway.'},
- {id:'doha',name:'DOHA',file:'pixel-doha-v2.png',alt:'회색 후드와 교복을 입고 편하게 선 도하',age:20,role:'멤버',bio:'밝고 호기심 많은, 사람을 좋아하는 강아지. 신나면 사투리가 튀어나온다.',traits:'밝음 · 호기심 · 사투리',line:'잠깐만 더 여기 있어.',caption:'A little closer.'},
- {id:'yunjae',name:'YUNJAE',file:'pixel-yunjae-v2.png',alt:'악보를 든 윤재',age:20,role:'멤버',bio:'조용히 지켜보다 정리해서 말하는 사람. 좋아하는 얘기엔 말이 길어진다.',traits:'관찰 · 정리 · 몰입',line:'이 멜로디, 기억나?',caption:'An unfinished song.'},
- {id:'roan',name:'ROAN',file:'pixel-roan-v2.png',alt:'수첩을 든 로안',age:19,role:'멤버',bio:'물 흐르듯 느긋하게 사는 4차원 자유 영혼.',traits:'느긋함 · 자유로움 · 4차원',line:'파도가 잦아들 때까지.',caption:'A quieter tide.'},
- {id:'chan',name:'CHAN',file:'pixel-chan-v2.png',alt:'한 손을 주머니에 넣고 자연스럽게 선 찬',age:18,role:'막내',bio:'말은 직설적이지만 행동은 누구보다 다정한 막내.',traits:'직설적 · 다정함 · 막내',line:'조금만 더 가까이 와.',caption:'Before we leave.'}
+ {id:'siwoo',name:'SIWOO',file:'pixel-siwoo-v1.png',alt:'소매를 고쳐 잡는 시우',age:21,role:'리더',bio:'차분하고 책임감 강한 리더. 친해지면 의외로 장난기가 많다.',traits:'차분함 · 책임감 · 장난기'},
+ {id:'doha',name:'DOHA',file:'pixel-doha-v2.png',alt:'회색 후드와 교복을 입고 편하게 선 도하',age:20,role:'멤버',bio:'밝고 호기심 많은, 사람을 좋아하는 강아지. 신나면 사투리가 튀어나온다.',traits:'밝음 · 호기심 · 사투리'},
+ {id:'yunjae',name:'YUNJAE',file:'pixel-yunjae-v2.png',alt:'악보를 든 윤재',age:20,role:'멤버',bio:'조용히 지켜보다 정리해서 말하는 사람. 좋아하는 얘기엔 말이 길어진다.',traits:'관찰 · 정리 · 몰입'},
+ {id:'roan',name:'ROAN',file:'pixel-roan-v2.png',alt:'수첩을 든 로안',age:19,role:'멤버',bio:'물 흐르듯 느긋하게 사는 4차원 자유 영혼.',traits:'느긋함 · 자유로움 · 4차원'},
+ {id:'chan',name:'CHAN',file:'pixel-chan-v2.png',alt:'한 손을 주머니에 넣고 자연스럽게 선 찬',age:18,role:'막내',bio:'말은 직설적이지만 행동은 누구보다 다정한 막내.',traits:'직설적 · 다정함 · 막내'}
 ];
 const conceptPhotos=[
  {title:'SIWOO',file:'siwoo-approved-v6.png',alt:'나뭇잎 사이에서 흰 민소매 차림으로 돌아보는 시우의 컨셉 사진'},
@@ -391,7 +391,7 @@ function showMember(index){
  memberIndex=(index+members.length)%members.length;const member=members[memberIndex];
  $('memberSprite').src='assets/'+member.file;$('memberSprite').alt=member.alt+'의 도트 캐릭터';
  $('memberIndex').textContent='FILE '+String(memberIndex+1).padStart(2,'0')+' / 05';
- $('memberName').textContent=member.name;$('memberAge').textContent=member.age+'세';$('memberRole').textContent=member.role;$('memberTraits').textContent=member.traits;$('memberBio').textContent=member.bio;$('memberLine').textContent=member.line;$('memberCaption').textContent=member.caption;
+ $('memberName').textContent=member.name;$('memberAge').textContent=member.age+'세';$('memberRole').textContent=member.role;$('memberTraits').textContent=member.traits;$('memberBio').textContent=member.bio;
  $('memberStatus').textContent=(memberIndex+1)+' / '+members.length+' members';
  document.querySelectorAll('#memberRoster button').forEach((button,i)=>button.setAttribute('aria-pressed',String(i===memberIndex)));
 }

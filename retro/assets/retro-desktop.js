@@ -51,22 +51,21 @@ const tracks=[
  {number:'06',title:'수평선 너머',subtitle:'',info:'수평선 너머 · SEIZE / FIRST¿'}
 ];
 const members=[
- {id:'doha',name:'DOHA',file:'pixel-doha-v1.png',alt:'회색 후드와 교복을 입고 편하게 선 도하',line:'잠깐만 더 여기 있어.',caption:'A little closer.'},
- {id:'siwoo',name:'SIWOO',file:'pixel-siwoo-v1.png',alt:'소매를 고쳐 잡는 시우',line:'문을 열어둘게.',caption:'At the doorway.'},
- {id:'yunjae',name:'YUNJAE',file:'pixel-yunjae-v1.png',alt:'악보를 든 윤재',line:'이 멜로디, 기억나?',caption:'An unfinished song.'},
- {id:'roan',name:'ROAN',file:'pixel-roan-v1.png',alt:'수첩을 든 로안',line:'파도가 잦아들 때까지.',caption:'A quieter tide.'},
- {id:'chan',name:'CHAN',file:'pixel-chan-v1.png',alt:'손을 들어 인사하는 찬',line:'조금만 더 가까이 와.',caption:'Before we leave.'}
+ {id:'siwoo',name:'SIWOO',file:'pixel-siwoo-v1.png',alt:'소매를 고쳐 잡는 시우',age:21,role:'리더',bio:'차분하고 책임감 강한 리더. 친해지면 의외로 장난기가 많다.',traits:'차분함 · 책임감 · 장난기',line:'문을 열어둘게.',caption:'At the doorway.'},
+ {id:'doha',name:'DOHA',file:'pixel-doha-v2.png',alt:'회색 후드와 교복을 입고 편하게 선 도하',age:20,role:'멤버',bio:'밝고 호기심 많은, 사람을 좋아하는 강아지. 신나면 사투리가 튀어나온다.',traits:'밝음 · 호기심 · 사투리',line:'잠깐만 더 여기 있어.',caption:'A little closer.'},
+ {id:'yunjae',name:'YUNJAE',file:'pixel-yunjae-v2.png',alt:'악보를 든 윤재',age:20,role:'멤버',bio:'조용히 지켜보다 정리해서 말하는 사람. 좋아하는 얘기엔 말이 길어진다.',traits:'관찰 · 정리 · 몰입',line:'이 멜로디, 기억나?',caption:'An unfinished song.'},
+ {id:'roan',name:'ROAN',file:'pixel-roan-v2.png',alt:'수첩을 든 로안',age:19,role:'멤버',bio:'물 흐르듯 느긋하게 사는 4차원 자유 영혼.',traits:'느긋함 · 자유로움 · 4차원',line:'파도가 잦아들 때까지.',caption:'A quieter tide.'},
+ {id:'chan',name:'CHAN',file:'pixel-chan-v2.png',alt:'한 손을 주머니에 넣고 자연스럽게 선 찬',age:18,role:'막내',bio:'말은 직설적이지만 행동은 누구보다 다정한 막내.',traits:'직설적 · 다정함 · 막내',line:'조금만 더 가까이 와.',caption:'Before we leave.'}
 ];
 const conceptPhotos=[
- {title:'GROUP',file:'group-approved-v6.png',alt:'체육관 바닥에 함께 앉은 SEIZE 다섯 멤버의 사진'},
- {title:'DOHA',file:'doha-selected-v9.png',alt:'바람 부는 야외에서 흰 티셔츠와 이어폰을 착용하고 몸을 숙인 도하의 컨셉 사진'},
  {title:'SIWOO',file:'siwoo-approved-v6.png',alt:'나뭇잎 사이에서 흰 민소매 차림으로 돌아보는 시우의 컨셉 사진'},
+ {title:'DOHA',file:'doha-selected-v9.png',alt:'바람 부는 야외에서 흰 티셔츠와 이어폰을 착용하고 몸을 숙인 도하의 컨셉 사진'},
  {title:'YUNJAE',file:'yunjae-rainy-concept-v3.png',alt:'비 오는 흐린 바닷가에서 꽃다발을 들고 내려다보는 윤재의 컨셉 사진'},
  {title:'ROAN',file:'roan-approved-v6.png',alt:'바닷가에서 흰 티셔츠를 입고 몸을 숙인 로안의 컨셉 사진'},
- {title:'ROAN 02',file:'roan-window-approved-v7.png',alt:'창가의 나무 탁자에 기대어 누운 로안의 컨셉 사진'},
  {title:'CHAN',file:'chan-approved-v6.png',alt:'빛 번지는 창가에서 바깥을 바라보는 찬의 컨셉 사진'},
+ {title:'GROUP',file:'group-approved-v6.png',alt:'체육관 바닥에 함께 앉은 SEIZE 다섯 멤버의 사진'},
  {title:'UNIT',file:'unit-clean-v3.png',alt:'도하와 로안이 함께 찍힌 디지털카메라 사진'},
- {title:'PIER',file:'pier-clean-v3.png',alt:'선착장에서 함께 찍은 SEIZE 멤버들의 디지털카메라 사진'}
+ {title:'UNIT',file:'pier-clean-v3.png',alt:'선착장에서 함께 찍은 SEIZE 멤버들의 디지털카메라 사진'}
 ];
 const discardedMemories=[
  {file:'shore_01.txt',date:'삭제 23:12',title:'선착장의 발자국',text:'모래 위에 다섯 사람의 발자국이 있었다. 파도 뒤에는 여섯 줄이 남았다. 누구도 뒤를 돌아보지 않았다.'},
@@ -114,10 +113,19 @@ function taskbar(){
  });
 }
 function focusWindow(id){const el=windows[id];if(el.hidden||focused===id&&el.classList.contains('active'))return;el.style.zIndex=String(++z);focused=id;Object.entries(windows).forEach(([key,w])=>w.classList.toggle('active',key===id));taskbar()}
-function openWindow(id){if(!windows[id]||(id==='secret'&&!secretUnlocked))return;const el=windows[id],wasHidden=el.hidden;el.hidden=false;el.classList.remove('minimized');el.style.display='flex';focusWindow(id);sound('open');if(id==='secret'&&wasHidden)enterSecret();if(id==='explore')$('exploreQuery').focus()}
+function openWindow(id){if(!windows[id]||(id==='secret'&&!secretUnlocked))return;const el=windows[id],wasHidden=el.hidden;el.hidden=false;el.classList.remove('minimized');el.style.display='flex';desktop.scrollTop=0;focusWindow(id);sound('open');if(id==='secret'&&wasHidden)enterSecret();if(id==='explore')$('exploreQuery').focus()}
 function minimize(id){const el=windows[id];el.classList.add('minimized');el.style.display='none';focused=null;taskbar();sound()}
 function closeWindow(id){const el=windows[id];el.hidden=true;el.classList.remove('minimized');el.style.display='';if(id==='secret')leaveSecret();if(id==='music'){audio.pause();deep.pause();syncPlay()}focused=null;taskbar();sound()}
-function maximize(id){const el=windows[id];el.classList.toggle('maximized');focusWindow(id);sound()}
+function syncMaxButton(id){
+ const button=windows[id].querySelector('[data-action="max"]');if(!button)return;
+ const maximized=windows[id].classList.contains('maximized');
+ button.textContent=maximized?'❐':'□';
+ button.setAttribute('aria-label',`${labels[id]} 창 ${maximized?'복원':'최대화'}`);
+ button.setAttribute('aria-pressed',String(maximized));
+ button.title=maximized?'이전 크기로 복원':'창 최대화';
+}
+function maximize(id){const el=windows[id];el.classList.toggle('maximized');syncMaxButton(id);focusWindow(id);sound()}
+Object.keys(windows).forEach(syncMaxButton);
 let unlockNoticeTimer=0,unlockNoticeAction=null;
 function finishUnlockNotice(){
  if($('unlockNotice').hidden)return;
@@ -383,12 +391,12 @@ function showMember(index){
  memberIndex=(index+members.length)%members.length;const member=members[memberIndex];
  $('memberSprite').src='assets/'+member.file;$('memberSprite').alt=member.alt+'의 도트 캐릭터';
  $('memberIndex').textContent='FILE '+String(memberIndex+1).padStart(2,'0')+' / 05';
- $('memberName').textContent=member.name;$('memberLine').textContent=member.line;$('memberCaption').textContent=member.caption;
+ $('memberName').textContent=member.name;$('memberAge').textContent=member.age+'세';$('memberRole').textContent=member.role;$('memberTraits').textContent=member.traits;$('memberBio').textContent=member.bio;$('memberLine').textContent=member.line;$('memberCaption').textContent=member.caption;
  $('memberStatus').textContent=(memberIndex+1)+' / '+members.length+' members';
  document.querySelectorAll('#memberRoster button').forEach((button,i)=>button.setAttribute('aria-pressed',String(i===memberIndex)));
 }
 members.forEach((member,index)=>{
- const button=document.createElement('button');button.type='button';button.className='member-roster-item';button.setAttribute('aria-label',member.name+' 소개 보기');
+ const button=document.createElement('button');button.type='button';button.className='member-roster-item';button.setAttribute('aria-label',member.name+', '+member.age+'세 소개 보기');
  const number=document.createElement('small');number.textContent=String(index+1).padStart(2,'0');
  const img=document.createElement('img');img.src='assets/'+member.file;img.alt='';
  const name=document.createElement('strong');name.textContent=member.name;button.append(number,img,name);
@@ -454,7 +462,7 @@ function showConcept(index){
  document.querySelectorAll('#conceptStrip button').forEach((button,i)=>button.setAttribute('aria-pressed',String(i===conceptIndex)));
 }
 conceptPhotos.forEach((photo,index)=>{
- const button=document.createElement('button');button.type='button';button.setAttribute('aria-label',photo.title+' 사진 보기');
+ const button=document.createElement('button');button.type='button';button.setAttribute('aria-label',photo.title+' '+String(index+1).padStart(2,'0')+' 사진 보기');
  const img=document.createElement('img');img.src='assets/'+photo.file;img.alt='';const title=document.createElement('span');title.textContent=photo.title;button.append(img,title);
  button.addEventListener('click',()=>{showConcept(index);sound()});$('conceptStrip').append(button);
 });
@@ -470,9 +478,9 @@ function unlockConcept(){
   openWindow('concept');showConceptTab('photos');
  });
 }
-const scoreStorageKey='seize-score-tiles-v2',scoreHintsKey='seize-score-tile-hints-v2';
+const scoreStorageKey='seize-score-tiles-v2',scoreHintsKey='seize-score-tile-hints-v2',scoreHintLimit=5;
 let scoreState=SeizeScorePuzzle.shuffle(),scoreHints=0,scoreSelected=-1,scoreActiveIndex=0,scoreDragFrom=-1,scoreUnlockPending=false;
-try{const saved=JSON.parse(sessionStorage.getItem(scoreStorageKey)||'null');if(SeizeScorePuzzle.isValid(saved))scoreState=saved;scoreHints=Number(sessionStorage.getItem(scoreHintsKey))||0}catch{}
+try{const saved=JSON.parse(sessionStorage.getItem(scoreStorageKey)||'null');if(SeizeScorePuzzle.isValid(saved))scoreState=saved;scoreHints=Math.min(scoreHintLimit,Math.max(0,Number(sessionStorage.getItem(scoreHintsKey))||0))}catch{}
 if(secretUnlocked)scoreState=SeizeScorePuzzle.solved.slice();
 function saveScore(){try{sessionStorage.setItem(scoreStorageKey,JSON.stringify(scoreState));sessionStorage.setItem(scoreHintsKey,String(scoreHints))}catch{}}
 function refreshScore(){
@@ -483,10 +491,13 @@ function refreshScore(){
   button.setAttribute('aria-label',`${Math.floor(index/5)+1}행 ${index%5+1}열, 악보 조각 ${tile+1}${tile===index?', 제자리':''}${index===scoreSelected?', 선택됨':''}`);
  });
  $('scoreProgress').textContent=`제자리 ${scoreState.filter((tile,index)=>tile===index).length} / 25`;
- $('scoreHints').textContent=`힌트 ${scoreHints}회`;
+ $('scoreHints').textContent=`힌트 ${scoreHints} / ${scoreHintLimit}회`;
+ $('scoreHint').disabled=scoreHints>=scoreHintLimit||secretUnlocked||scoreUnlockPending;
+ $('scoreHint').title=scoreHints>=scoreHintLimit?'힌트는 5회 모두 사용했습니다.':'남은 힌트 '+(scoreHintLimit-scoreHints)+'회';
  saveScore();
  if(!secretUnlocked&&!scoreUnlockPending&&conceptUnlocked&&SeizeScorePuzzle.isSolved(scoreState)){
   scoreUnlockPending=true;
+  $('scoreHint').disabled=true;
   showUnlockNotice('COMPLETE / 02','비밀 폴더를 발견했습니다.',()=>{
    unlockSecret();$('scorePlay').hidden=true;$('quizComplete').hidden=false;$('openSecretFile').focus();
   });
@@ -522,8 +533,8 @@ for(let index=0;index<SeizeScorePuzzle.count;index++){
  });
  $('scoreGrid').append(button);
 }
-$('scoreHint').addEventListener('click',()=>{const hint=SeizeScorePuzzle.hint(scoreState);if(!hint)return;scoreState=hint.state;scoreSelected=-1;scoreHints++;$('scoreFeedback').textContent=`${Math.floor(hint.target/5)+1}행 ${hint.target%5+1}열의 조각을 제자리로 돌렸습니다.`;refreshScore()});
-$('scoreReset').addEventListener('click',()=>{scoreState=SeizeScorePuzzle.shuffle();scoreHints=0;scoreSelected=-1;$('scoreFeedback').textContent='악보 조각을 다시 섞었습니다.';refreshScore()});
+$('scoreHint').addEventListener('click',()=>{if(scoreHints>=scoreHintLimit||secretUnlocked||scoreUnlockPending)return;const hint=SeizeScorePuzzle.hint(scoreState);if(!hint)return;scoreState=hint.state;scoreSelected=-1;scoreHints++;$('scoreFeedback').textContent=`${Math.floor(hint.target/5)+1}행 ${hint.target%5+1}열의 조각을 제자리로 돌렸습니다.${scoreHints>=scoreHintLimit?' 힌트를 모두 사용했습니다.':''}`;refreshScore()});
+$('scoreReset').addEventListener('click',()=>{scoreState=SeizeScorePuzzle.shuffle();scoreSelected=-1;$('scoreFeedback').textContent='악보 조각을 다시 섞었습니다. 사용한 힌트 횟수는 유지됩니다.';refreshScore()});
 $('scorePreview').addEventListener('click',()=>{const visible=$('scoreReference').hidden;$('scoreReference').hidden=!visible;$('scorePreview').setAttribute('aria-pressed',String(visible));$('scorePreview').textContent=visible?'원본 닫기':'원본 보기'});
 function renderScorePuzzle(){$('scorePlay').hidden=secretUnlocked;$('quizComplete').hidden=!secretUnlocked;refreshScore()}
 renderScorePuzzle();
@@ -532,7 +543,7 @@ $('openSecretFile').addEventListener('click',()=>{closeWindow('concept');desktop
 const menuActions={
  disc:()=>setLid(!lidOpen),'music-view':()=>maximize('music'),'music-options':()=>$('soundToggle').click(),'music-help':()=>{$('musicStatus').textContent='CD를 열고 디스크를 넣으세요.'},
  'member-file':()=>{showMemberTab('profile');showMember(0)},'member-next':()=>{showMemberTab('profile');showMember(memberIndex+1)},'member-game':()=>showMemberTab('game'),'member-view':()=>maximize('photos'),'member-help':()=>{$('memberStatus').textContent='기억 카드를 모두 맞추면 컨셉 포토가 열립니다.'},
- 'album-top':()=>windows.album.querySelector('.window-body').scrollTo({top:0,behavior:'smooth'}),'album-tracks':()=>windows.album.querySelector('#albumTracks').scrollIntoView({block:'start',behavior:'smooth'}),'album-credits':()=>{$('albumTracks').nextElementSibling.textContent='SEIZE · FIRST¿ / 1st Mini Album'},'album-help':()=>{$('albumTracks').nextElementSibling.textContent='곡을 선택하면 CD Player에서 곡 정보를 볼 수 있어요.'},
+ 'album-top':()=>windows.album.querySelector('.window-body').scrollTo({top:0,behavior:'smooth'}),'album-tracks':()=>{const body=windows.album.querySelector('.window-body');const target=$('albumTracks');body.scrollTo({top:body.scrollTop+target.getBoundingClientRect().top-body.getBoundingClientRect().top,behavior:'smooth'});desktop.scrollTop=0},'album-credits':()=>{$('albumTracks').nextElementSibling.textContent='SEIZE · FIRST¿ / 1st Mini Album'},'album-help':()=>{$('albumTracks').nextElementSibling.textContent='곡을 선택하면 CD Player에서 곡 정보를 볼 수 있어요.'},
  'concept-first':()=>{if(conceptUnlocked){showConceptTab('photos');showConcept(0)}else{openWindow('photos');showMemberTab('game')}},'concept-next':()=>{if(conceptUnlocked){showConceptTab('photos');showConcept(conceptIndex+1)}else{openWindow('photos');showMemberTab('game')}},'concept-view':()=>maximize('concept'),'concept-help':()=>{$('conceptStatus').textContent=conceptUnlocked?'5×5 악보 조각을 맞추면 비밀 폴더가 나타납니다.':'멤버 소개의 기억 카드를 맞추면 열립니다.'},
  'secret-file':()=>closeWindow('secret'),'secret-edit':async()=>{try{await navigator.clipboard.writeText(chatHistory.map(item=>`${item.time} ${item.role==='user'?'방문자':SeizeChat.personas[item.memberId].name}: ${item.text}`).join('\n'));$('chatStatus').textContent='현재 대화를 복사했습니다.'}catch{$('chatStatus').textContent='복사할 수 없습니다.'}},'secret-search':()=>openPasswordDialog(),'secret-help':()=>{$('chatStatus').textContent='메시지를 보내거나 Search에서 보호된 파일을 열 수 있습니다.'}
 };

@@ -8,6 +8,7 @@
 <title>SEIZE / FIRST¿ — Desktop</title>
 <link rel="icon" href="assets/seize-logo.png">
 <link rel="stylesheet" href="assets/retro-desktop.css?v=member-quotes-removed-1">
+<script src="assets/analytics.js?v=1"></script>
 </head>
 <body>
 <a class="skip-link" href="#desktop">바탕화면으로 이동</a>
@@ -102,7 +103,7 @@
     <div class="statusbar"><span id="trashStatus">5 objects</span><span>RESTORE UNAVAILABLE</span></div>
   </section>
 
-  <section class="window secret-window" data-window="secret" aria-label="비밀 폴더" hidden>
+  <section class="window secret-window ph-no-capture" data-window="secret" aria-label="비밀 폴더" hidden>
     <div class="titlebar"><img src="assets/retro-icons/secret-folder.svg" alt=""><strong>비밀 폴더 — UNNAMED</strong><div class="window-actions"><button data-action="min" aria-label="비밀 폴더 최소화">_</button><button data-action="max" aria-label="비밀 폴더 최대화">□</button><button data-action="close" aria-label="비밀 폴더 닫기">×</button></div></div>
     <div class="menubar"><button data-menu="secret-file">File</button><button data-menu="secret-edit">Edit</button><button data-menu="secret-search">Search</button><button data-menu="secret-help">Help</button></div>
     <div class="window-body secret-body"><div class="secret-head"><span>SEIZE / LIVE CHANNEL</span><span>5 MEMBERS ONLINE</span></div><div id="chatLog" class="chat-log" role="log" aria-label="SEIZE 멤버와의 대화" aria-live="polite"></div><div class="chat-prompts" aria-label="대화 시작 질문"><button type="button" data-chat-prompt="세이렌은 누구야?">세이렌은 누구야?</button><button type="button" data-chat-prompt="00:00은 무슨 뜻이야?">00:00은 무슨 뜻이야?</button><button type="button" data-chat-prompt="어떻게 돌아갈 수 있어?">어떻게 돌아갈 수 있어?</button></div><form id="chatForm" class="chat-form"><label for="chatInput" class="sr-only">메시지</label><textarea id="chatInput" rows="2" maxlength="240" placeholder="메시지를 입력하세요"></textarea><button id="chatSend" class="retro-button" type="submit">전송 ↵</button></form><div class="chat-bottom"><button id="exitSecret" class="retro-button" type="button">프로그램 종료</button></div></div>

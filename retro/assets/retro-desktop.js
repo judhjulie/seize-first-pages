@@ -113,7 +113,7 @@ function taskbar(){
  });
 }
 function focusWindow(id){const el=windows[id];if(el.hidden||focused===id&&el.classList.contains('active'))return;el.style.zIndex=String(++z);focused=id;Object.entries(windows).forEach(([key,w])=>w.classList.toggle('active',key===id));taskbar()}
-function openWindow(id){if(!windows[id]||(id==='secret'&&!secretUnlocked))return;const el=windows[id],wasHidden=el.hidden;el.hidden=false;el.classList.remove('minimized');el.style.display='flex';desktop.scrollTop=0;focusWindow(id);sound('open');if(id==='secret'&&wasHidden)enterSecret();if(id==='explore')$('exploreQuery').focus()}
+function openWindow(id){if(!windows[id]||(id==='secret'&&!secretUnlocked))return;const el=windows[id],wasHidden=el.hidden;el.hidden=false;el.classList.remove('minimized');el.style.display='flex';desktop.scrollTop=0;focusWindow(id);sound('open');if(wasHidden)window.seizeAnalytics?.capture('seize_window_opened',{window:id});if(id==='secret'&&wasHidden){window.seizeAnalytics?.capture('seize_secret_folder_opened');enterSecret()}if(id==='explore')$('exploreQuery').focus()}
 function minimize(id){const el=windows[id];el.classList.add('minimized');el.style.display='none';focused=null;taskbar();sound()}
 function closeWindow(id){const el=windows[id];el.hidden=true;el.classList.remove('minimized');el.style.display='';if(id==='secret')leaveSecret();if(id==='music'){audio.pause();deep.pause();syncPlay()}focused=null;taskbar();sound()}
 function syncMaxButton(id){
@@ -175,7 +175,7 @@ Object.entries(windows).forEach(([id,el])=>{
  },true);
  el.addEventListener('pointerup',()=>resizing=null);el.addEventListener('pointercancel',()=>resizing=null);el.addEventListener('pointerleave',()=>{if(!resizing)el.style.cursor=''})
 });
-function unlockSecret(){if(!conceptUnlocked||secretUnlocked)return;secretUnlocked=true;localStorage.setItem('seize-secret-tiles-v2','1');const icon=desktop.querySelector('.secret-icon');icon.hidden=false;icon.style.zIndex='3';$('conceptQuizBadge').textContent='완료';$('conceptStatus').textContent='5×5 score assembled · Secret folder unlocked';renderExplore();sound('error')}
+function unlockSecret(){if(!conceptUnlocked||secretUnlocked)return;secretUnlocked=true;window.seizeAnalytics?.capture('seize_score_completed');localStorage.setItem('seize-secret-tiles-v2','1');const icon=desktop.querySelector('.secret-icon');icon.hidden=false;icon.style.zIndex='3';$('conceptQuizBadge').textContent='완료';$('conceptStatus').textContent='5×5 score assembled · Secret folder unlocked';renderExplore();sound('error')}
 function enterSecret(){
  clearErrorStorm();
  clearTimeout(secretTimer);clearTimeout(floodTimer);clearTimeout(loadingTimer);
@@ -253,9 +253,10 @@ function startSirenChat(){
 }
 function sendChat(){
  if(chatPending)return;const text=$('chatInput').value.trim();if(!text)return;
+ window.seizeAnalytics?.capture('seize_chat_message_sent');
  const time=new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit',hour12:false});
  const lastTopic=[...chatHistory].reverse().find(item=>item.role==='member')?.topic||'';
- $('chatInput').value='';if(text.toLowerCase()==='seize'){appendChatMessage({role:'user',text,time});startSirenChat();return}
+ $('chatInput').value='';if(text.toLowerCase()==='seize'){window.seizeAnalytics?.capture('seize_siren_triggered');appendChatMessage({role:'user',text,time});startSirenChat();return}
  if(sirenActive){appendChatMessage({role:'user',text,time});clearTimeout(sirenTimer);appendSirenBeat();return}
  addChatMessage({role:'user',text,time});setChatPending(true);$('chatStatus').textContent='멤버가 답장을 쓰는 중…';
  const reply=SeizeChat.respond(text,{recipient:'auto',lastTopic,turn:chatHistory.filter(item=>item.role==='user').length-1,random:Math.random()});
@@ -405,6 +406,7 @@ members.forEach((member,index)=>{
 showMember(0);
 function showMemberTab(tab){
  const playing=tab==='game';$('memberProfilePanel').hidden=playing;$('memberGamePanel').hidden=!playing;
+ if(playing)window.seizeAnalytics?.capture('seize_member_game_opened');
  $('memberProfileTab').setAttribute('aria-pressed',String(!playing));$('memberGameTab').setAttribute('aria-pressed',String(playing));
  $('memberStatus').textContent=playing?(conceptUnlocked?'Memory complete · Photos unlocked':'Find 5 matching pairs'):(memberIndex+1)+' / '+members.length+' members';
 }
@@ -442,6 +444,7 @@ startMemoryGame();
 if(conceptUnlocked){$('memberGameBadge').textContent='PHOTO OPEN';$('gameComplete').hidden=false}
 function showConceptTab(tab){
  if(!conceptUnlocked)return;const quizVisible=tab==='quiz';
+ if(quizVisible)window.seizeAnalytics?.capture('seize_score_puzzle_opened');
  $('conceptGallery').hidden=quizVisible;$('conceptQuiz').hidden=!quizVisible;
  $('conceptPhotosTab').setAttribute('aria-pressed',String(!quizVisible));$('conceptQuizTab').setAttribute('aria-pressed',String(quizVisible));
  $('conceptStatus').textContent=secretUnlocked?'5×5 score assembled · Secret folder unlocked':quizVisible?'5×5 score puzzle · In progress':conceptPhotos.length+' photos · Score puzzle pending';
@@ -472,6 +475,7 @@ $('conceptNext').addEventListener('click',()=>{showConcept(conceptIndex+1);sound
 $('conceptGoQuiz').addEventListener('click',()=>{openWindow('photos');showMemberTab('game')});
 function unlockConcept(){
  if(conceptUnlocked)return;
+ window.seizeAnalytics?.capture('seize_concept_unlocked');
  conceptUnlocked=true;localStorage.setItem('seize-concept-memory-v1','1');
  showUnlockNotice('COMPLETE / 01','컨셉 포토 잠금이 해제되었습니다.',()=>{
   $('memberGameBadge').textContent='PHOTO OPEN';$('gameComplete').hidden=false;$('memberStatus').textContent='Memory complete · Photos unlocked';syncConceptLock();
@@ -533,7 +537,7 @@ for(let index=0;index<SeizeScorePuzzle.count;index++){
  });
  $('scoreGrid').append(button);
 }
-$('scoreHint').addEventListener('click',()=>{if(scoreHints>=scoreHintLimit||secretUnlocked||scoreUnlockPending)return;const hint=SeizeScorePuzzle.hint(scoreState);if(!hint)return;scoreState=hint.state;scoreSelected=-1;scoreHints++;$('scoreFeedback').textContent=`${Math.floor(hint.target/5)+1}행 ${hint.target%5+1}열의 조각을 제자리로 돌렸습니다.${scoreHints>=scoreHintLimit?' 힌트를 모두 사용했습니다.':''}`;refreshScore()});
+$('scoreHint').addEventListener('click',()=>{if(scoreHints>=scoreHintLimit||secretUnlocked||scoreUnlockPending)return;const hint=SeizeScorePuzzle.hint(scoreState);if(!hint)return;scoreState=hint.state;scoreSelected=-1;scoreHints++;window.seizeAnalytics?.capture('seize_score_hint_used',{hint_number:scoreHints});$('scoreFeedback').textContent=`${Math.floor(hint.target/5)+1}행 ${hint.target%5+1}열의 조각을 제자리로 돌렸습니다.${scoreHints>=scoreHintLimit?' 힌트를 모두 사용했습니다.':''}`;refreshScore()});
 $('scoreReset').addEventListener('click',()=>{scoreState=SeizeScorePuzzle.shuffle();scoreSelected=-1;$('scoreFeedback').textContent='악보 조각을 다시 섞었습니다. 사용한 힌트 횟수는 유지됩니다.';refreshScore()});
 $('scorePreview').addEventListener('click',()=>{const visible=$('scoreReference').hidden;$('scoreReference').hidden=!visible;$('scorePreview').setAttribute('aria-pressed',String(visible));$('scorePreview').textContent=visible?'원본 닫기':'원본 보기'});
 function renderScorePuzzle(){$('scorePlay').hidden=secretUnlocked;$('quizComplete').hidden=!secretUnlocked;refreshScore()}
@@ -554,6 +558,7 @@ let shutdownTimer=0,shutdownPending=false;
 function cancelShutdownSequence(){clearTimeout(shutdownTimer);shutdownPending=false;desktop.classList.remove('shutdown-glitch');desktop.querySelector('.shutdown-interference').hidden=true}
 function closeShutdownDialog(){cancelShutdownSequence();$('shutdownDialog').hidden=true;$('startButton').focus()}
 $('startClose').addEventListener('click',()=>{
+ window.seizeAnalytics?.capture('seize_shutdown_attempted');
  $('startMenu').hidden=true;$('startButton').setAttribute('aria-expanded','false');
  cancelShutdownSequence();shutdownPending=true;desktop.querySelector('.shutdown-interference').hidden=false;
  desktop.classList.add('shutdown-glitch');sound('error');

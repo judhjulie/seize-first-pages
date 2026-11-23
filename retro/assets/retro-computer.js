@@ -114,6 +114,7 @@ screenHitTarget.updateMatrixWorld();
 const screenRaycaster=new THREE.Raycaster();
 let screenFocused=false;
 function setScreenFocus(focused){
+ if(focused&&!screenFocused)window.seizeAnalytics?.capture('seize_computer_focused');
  if(focused&&useDirectTouchScreen()){
   window.location.assign('desktop.html?mobile=1&v=member-quotes-removed-1');
   return;
